@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
+import forget from './components/forget_password.vue'
 const activeName = ref('login')
 //表单数据类型
 interface formData {
@@ -18,6 +19,12 @@ const registerData: formData = reactive({
   password: '11',
   repassword: '11'
 })
+// 忘记密码弹窗
+const forgetPwd = ref()
+// 打开忘记密码弹窗
+const openForget = () => {
+  forgetPwd.value.open()
+}
 </script>
 <template>
   <div class="common-layout">
@@ -49,7 +56,7 @@ const registerData: formData = reactive({
                   <div class="footer-wrapper">
                     <!-- 忘记密码 -->
                     <div class="forget-password">
-                      <span class="forget-password-button">忘记密码</span>
+                      <span class="forget-password-button" @click="openForget">忘记密码</span>
                     </div>
                     <!-- 登录按钮 -->
                     <div class="footer-button">
@@ -102,6 +109,8 @@ const registerData: formData = reactive({
       </el-footer>
     </el-container>
   </div>
+  <!-- 忘记密码组件 -->
+  <forget ref="forgetPwd" />
 </template>
 <style lang="scss" scoped>
 // 头部外壳
