@@ -21,6 +21,7 @@ app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 //处理json
 app.use(bodyParser.json());
+
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));

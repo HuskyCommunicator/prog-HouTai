@@ -10,10 +10,15 @@ const UserModel = {
       // 执行查询
       db.query(querySql, account, (err, results) => {
         // 如果有错误，拒绝Promise
-        if (err) reject(err);
+        if (err) {
+          console.error(err);
+          reject(err);
+        }
         // 否则，解析Promise并返回结果
         else resolve(results[0]);
       });
+    }).catch((err) => {
+      console.error("Error in findUserByAccount:", err);
     });
   },
 
@@ -25,10 +30,15 @@ const UserModel = {
       // 执行插入
       db.query(insertSql, user, (err, results) => {
         // 如果有错误，拒绝Promise
-        if (err) reject(err);
+        if (err) {
+          console.error(err);
+          reject(err);
+        }
         // 否则，解析Promise并返回插入的ID
         else resolve(results.insertId);
       });
+    }).catch((err) => {
+      console.error("Error in insertUser:", err);
     });
   },
 };

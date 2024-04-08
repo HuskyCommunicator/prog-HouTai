@@ -1,4 +1,4 @@
-const sendRes = (code, msg, data = null) => {
+const sendRes = (res, code, msg, data = null) => {
   const response = {
     code,
     msg,
@@ -6,6 +6,6 @@ const sendRes = (code, msg, data = null) => {
   if (data !== null) {
     response.data = data;
   }
-  return response;
+  res.status(code).send(response);
 };
 module.exports = sendRes;
