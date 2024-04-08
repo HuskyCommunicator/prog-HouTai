@@ -2,6 +2,16 @@
 import { RouterLink, RouterView } from 'vue-router'
 </script>
 
-<template>aaaaa</template>
+<template>
+  <router-view></router-view>
+</template>
 
-<style scoped></style>
+<style lang="scss">
+body {
+  margin: 0;
+  padding: 0;
+}
+.el-main {
+  padding: 0 !important;
+}
+</style>

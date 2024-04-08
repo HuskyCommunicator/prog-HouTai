@@ -69,7 +69,6 @@ const authController = {
     //比较密码
     const pwd = await bcrypt.compare(password, user.password);
     if (!pwd) {
-      console.log(password, pwd);
       return sendRes(res, 400, "账号与密码不匹配");
     }
 
