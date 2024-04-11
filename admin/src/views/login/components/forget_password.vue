@@ -16,8 +16,8 @@ interface formData {
 const forgetData: formData = reactive({
   account: '11',
   email: '11@qq.com',
-  password: '',
-  repassword: ''
+  password: 'aa',
+  repassword: 'as'
 })
 
 // 表单对象引用
@@ -53,10 +53,7 @@ const rules: Record<string, any> = {
     { type: 'email', message: '请输入正确的邮箱格式', trigger: 'blur' }
   ],
   password: [{ required: true, message: '请输入您的新密码', trigger: 'blur' }],
-  repassword: [
-    { required: true, message: '请再次输入您的新密码', trigger: 'blur' },
-    { validator: pwdValid, trigger: 'blur' }
-  ]
+  repassword: [{ required: true, message: '请再次输入您的新密码', trigger: 'blur' }]
 }
 
 // 打开忘记密码弹窗

@@ -69,7 +69,7 @@ const login = async (): Promise<void> => {
             ElMessage.success('登录成功')
           }
         } catch (err: any) {
-          // 错误处理
+          // 已在拦截器中处理过错误信息，此处不再重复处理
         }
       }
     })
@@ -185,7 +185,6 @@ $secondary-font-size: 12px;
       background-color: white;
       height: 100%;
       width: 100%;
-
       .login-form {
         margin: 30px 20px 20px 20px;
         .el-form-item {
