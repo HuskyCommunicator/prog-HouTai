@@ -1,8 +1,10 @@
 <script setup lang="ts">
+// 导入所需的库和API
 import { onMounted, reactive, ref } from 'vue'
-import forget from './components/forget_password.vue'
 import { loginAPI } from '@/apis/authAPI'
 import { ElMessage } from 'element-plus'
+import Forget from './components/forget_password.vue'
+
 // 定义表单数据的接口
 interface formData {
   account: string
@@ -24,241 +26,224 @@ const registerData: formData = reactive({
 })
 
 // 创建对登录表单和注册表单的引用
-const loginForm = ref()
-const registerForm = ref()
+const loginForm = ref<HTMLFormElement | null>(null)
+const registerForm = ref<HTMLFormElement | null>(null)
 
 // 创建对忘记密码弹窗的引用
-const forgetPwd = ref()
+const forgetPwd = ref<InstanceType<typeof Forget> | null>(null)
 
 // 当前活动的标签页名称
-const activeName = ref('login')
+const activeName = ref<string>('login')
 
 // 表单验证规则
-const rules = ref()
+const rules: Record<string, any> = ref({})
 
 // 在组件挂载后，获取子组件的表单验证规则
 onMounted(() => {
-  rules.value = forgetPwd.value.rules
+  if (forgetPwd.value) {
+    rules.value = forgetPwd.value.rules
+  }
 })
 
 // 打开忘记密码弹窗
 const openForget = () => {
-  forgetPwd.value.open()
+  if (forgetPwd.value) {
+    forgetPwd.value.open()
+  } else {
+    console.log('gg')
+  }
 }
-//登录
-const login = async () => {
+//
+const goRegister = () => {
+  activeName.value = 'register'
+}
+// 登录
+const login = async (): Promise<void> => {
   const { account, password } = loginData
-  loginForm.value.validate(async (valid: any) => {
-    if (valid) {
-      try {
-        const res = await loginAPI({ account, password })
-        if (res.status === 200) {
-          ElMessage.success('登录成功')
+  if (loginForm.value) {
+    loginForm.value.validate(async (valid: boolean) => {
+      if (valid) {
+        try {
+          const res = await loginAPI({ account, password })
+          if (res.status === 200) {
+            ElMessage.success('登录成功')
+          }
+        } catch (err: any) {
+          // 错误处理
         }
-      } catch (err: any) {}
-    }
-  })
+      }
+    })
+  }
 }
 </script>
-
 <template>
   <div class="common-layout">
     <el-container>
-      <!-- Header -->
-      <el-header class="header-wrapper">
-        <div class="header-content">
-          <h3>通用后台管理系统</h3>
-          <span class="welcome">欢迎登录</span>
-        </div>
+      <!-- 头部 -->
+      <el-header>
+        <h3>通用后台管理系统</h3>
+        <span class="welcome">欢迎登录</span>
       </el-header>
-      <!-- Main -->
+      <!-- 主体 -->
       <el-main>
-        <div class="login-wrapper">
-          <el-card class="box-card">
-            <el-tabs v-model="activeName" class="demo-tabs" :stretch="true">
-              <!-- 登录 -->
-              <el-tab-pane label="登录" name="login">
-                <el-form class="login-form" :rules="rules" ref="loginForm" :model="loginData">
-                  <!-- 账号 -->
-                  <el-form-item label="账号" prop="account">
-                    <el-input v-model="loginData.account" placeholder="请输入账号" />
-                  </el-form-item>
-                  <!-- 密码 -->
-                  <el-form-item label="密码" prop="password">
-                    <el-input v-model="loginData.password" placeholder="请输入密码" />
-                  </el-form-item>
-                  <!-- 底部 -->
-                  <div class="footer-wrapper">
-                    <!-- 忘记密码 -->
-                    <div class="forget-password">
-                      <span class="forget-password-button" @click="openForget">忘记密码</span>
-                    </div>
-                    <!-- 登录按钮 -->
-                    <div class="footer-button">
-                      <el-button type="primary" @click="login">登录</el-button>
-                    </div>
-                    <!-- 转到注册 -->
-                    <div class="footer-go-register">
-                      还没有账号?
-                      <span class="go-register">立即注册</span>
-                    </div>
+        <div class="el-main-card">
+          <!-- 标签页 -->
+          <el-tabs v-model="activeName" :stretch="true">
+            <!-- 登录 -->
+            <el-tab-pane label="登录" name="login">
+              <el-form class="login-form" :rules="rules" ref="loginForm" :model="loginData">
+                <!-- 账号 -->
+                <el-form-item label="账号" prop="account">
+                  <el-input v-model="loginData.account" placeholder="请输入账号" />
+                </el-form-item>
+                <!-- 密码 -->
+                <el-form-item label="密码" prop="password">
+                  <el-input v-model="loginData.password" placeholder="请输入密码" />
+                </el-form-item>
+                <!-- 底部 -->
+                <div class="form-footer">
+                  <!-- 忘记密码 -->
+                  <div class="form-footer-forget">
+                    <span class="form-footer-forget-button" @click="openForget">忘记密码</span>
                   </div>
-                </el-form>
-              </el-tab-pane>
-              <!-- 注册 -->
-              <el-tab-pane label="注册" name="register">
-                <el-form class="register-form" ref="registerForm" :model="registerData" :rules>
-                  <!-- 账号 -->
-                  <el-form-item label="账号" prop="account">
-                    <el-input v-model="registerData.account" placeholder="账号长度1-6位" />
-                  </el-form-item>
-                  <!-- 密码 -->
-                  <el-form-item label="密码" prop="password">
-                    <el-input
-                      v-model="registerData.password"
-                      placeholder="密码长度1-6位 包括字母和数字"
-                    />
-                  </el-form-item>
-                  <!-- 确认密码 -->
-                  <el-form-item label="确认密码" prop="repassword">
-                    <el-input v-model="registerData.repassword" placeholder="请再次输入密码" />
-                  </el-form-item>
-                  <!-- 注册按钮 -->
-                  <div class="footer-button">
-                    <el-button type="primary">注册</el-button>
+                  <!-- 登录按钮 -->
+                  <div class="form-footer-login">
+                    <el-button type="primary" @click="login">登录</el-button>
                   </div>
-                </el-form>
-              </el-tab-pane>
-            </el-tabs>
-          </el-card>
+                  <!-- 转到注册 -->
+                  <div class="form-footer-go">
+                    还没有账号?
+                    <span class="go-register" @click="goRegister">立即注册</span>
+                  </div>
+                </div>
+              </el-form>
+            </el-tab-pane>
+            <!-- 注册 -->
+            <el-tab-pane label="注册" name="register">
+              <el-form class="register-form" ref="registerForm" :model="registerData" :rules>
+                <!-- 账号 -->
+                <el-form-item label="账号" prop="account">
+                  <el-input v-model="registerData.account" placeholder="账号长度1-6位" />
+                </el-form-item>
+                <!-- 密码 -->
+                <el-form-item label="密码" prop="password">
+                  <el-input
+                    v-model="registerData.password"
+                    placeholder="密码长度1-6位 包括字母和数字"
+                  />
+                </el-form-item>
+                <!-- 确认密码 -->
+                <el-form-item label="确认密码" prop="repassword">
+                  <el-input v-model="registerData.repassword" placeholder="请再次输入密码" />
+                </el-form-item>
+                <!-- 注册按钮 -->
+                <div class="footer-button">
+                  <el-button type="primary">注册</el-button>
+                </div>
+              </el-form>
+            </el-tab-pane>
+          </el-tabs>
         </div>
       </el-main>
-      <!-- Footer -->
-      <el-footer class="footer-wrapper">
-        <div class="footer-content">
-          <div class="title">
-            <span>博客页面</span> | <span>博客页面</span> | <span>博客页面</span> |
-            <span>博客页面</span>
-          </div>
+      <!-- 底部 -->
+      <el-footer>
+        <div class="title">
+          <span>博客页面</span> | <span>博客页面</span> | <span>博客页面</span> |
+          <span>博客页面</span>
         </div>
       </el-footer>
     </el-container>
+    <!-- 组件 -->
+    <Forget ref="forgetPwd" />
   </div>
-  <!-- 忘记密码组件 -->
-  <forget ref="forgetPwd" />
 </template>
 <style lang="scss" scoped>
-// 头部外壳
-.header-wrapper {
-  //头部内容
-  .header-content {
-    width: 1200px;
-    margin: 0 auto;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    height: 60px;
-    .welcome {
-      font-size: 16px;
-      font-weight: bold;
-    }
-  }
-}
-// 主体外壳
-.el-main {
+$primary-color: #409eff;
+$primary-font-size: 16px;
+$secondary-font-size: 12px;
+.el-container {
   background-image: url('../../assets/1.png');
-  height: 600px;
   background-size: cover;
   background-position: center;
-  .login-wrapper {
-    width: 1200px;
-    margin: 0 auto;
-    height: 600px;
-  }
-  .box-card {
+}
+.el-header {
+  display: flex;
+  height: 7vh;
+  align-items: center;
+  justify-content: space-between;
+}
+.el-main {
+  height: 79vh;
+  position: relative;
+  .el-main-card {
+    right: 8%;
+    top: 8%;
     width: 350px;
     height: 375px;
-    float: right;
-    position: relative;
-    top: 14%;
-    .login-form {
-      //登录底部外壳
-      .footer-wrapper {
-        display: flex;
-        flex-direction: column;
-        // 忘记密码
-        .forget-password {
-          display: flex;
-          justify-content: flex-end;
-          margin: 10px;
-          .forget-password-button {
-            color: #409eff;
-            font-size: 12px;
-            cursor: pointer;
-          }
-        }
+    position: absolute;
+    .el-tabs {
+      background-color: white;
+      height: 100%;
+      width: 100%;
 
-        // 转到注册
-        .footer-go-register {
-          font-size: 12px;
-          margin: 12px 0;
+      .login-form {
+        margin: 30px 20px 20px 20px;
+        .el-form-item {
+          margin: 30px 0;
+        }
+        .form-footer {
+          margin-top: 30px;
+          height: 150px;
           display: flex;
-          justify-content: center;
-          .go-register {
-            font-size: 12px;
-            color: #409eff;
+          flex-direction: column;
+          .form-footer-forget {
+            .form-footer-forget-button {
+              color: $primary-color;
+              font-size: $secondary-font-size;
+              cursor: pointer;
+              float: right;
+            }
+          }
+          .form-footer-login {
+            margin: 10px 0;
+            .el-button {
+              width: 310px;
+              height: 45px;
+              margin: auto;
+              font-size: $primary-font-size;
+            }
+          }
+          .form-footer-go {
+            color: $primary-color;
+            font-size: $secondary-font-size;
             cursor: pointer;
           }
         }
       }
-    }
-    // 登录按钮
-    .footer-button {
-      width: 100%;
-      display: flex;
-      justify-content: center;
+      .register-form {
+        margin: 30px 20px 20px 20px;
+        .el-button {
+          width: 310px;
+          height: 45px;
+          font-size: $primary-font-size;
+        }
+      }
     }
   }
 }
-// 页脚外壳
-.footer-wrapper {
-  margin-top: 8px;
-  //页脚内容
-  .footer-content {
-    width: 1200px;
-    margin: 0 auto;
+.el-footer {
+  height: 14vh;
+  .title {
     display: flex;
     justify-content: center;
     align-items: center;
-    .title {
-      color: #666;
-    }
     span {
-      margin: 0 4px;
+      margin: 5px;
     }
   }
 }
-//表单边距
-.el-form {
-  margin-top: 28px;
-}
-// tabs标签
 :deep(.el-tabs__item) {
-  color: #333;
-  font-size: 16px;
-}
-// 输入框高度
-:deep(.el-input__inner) {
-  height: 40px;
-}
-// 输入框标签高度
-:deep(.el-form-item__label) {
-  height: 40px;
-  line-height: 40px;
-}
-:deep(.el-button) {
-  width: 300px;
-  height: 45px;
-  font-size: 16px;
+  height: 52px;
+  line-height: 50px;
 }
 </style>

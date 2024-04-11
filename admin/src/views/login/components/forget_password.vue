@@ -1,14 +1,9 @@
 <script lang="ts" setup>
+// 导入所需的库和API
 import { ref, reactive } from 'vue'
 import { forgetPwdAPI } from '@/apis/authAPI.js'
 import { ElMessage } from 'element-plus'
 
-// 表单对齐方式
-const labelPosition = ref('top')
-
-// 表单对象引用
-const forgetFormRef = ref()
-const newPwdFormRef = ref()
 // 定义表单数据的接口
 interface formData {
   account: string
@@ -21,9 +16,16 @@ interface formData {
 const forgetData: formData = reactive({
   account: '11',
   email: '11@qq.com',
-  password: '11',
-  repassword: '11'
+  password: '',
+  repassword: ''
 })
+
+// 表单对象引用
+const forgetFormRef = ref<HTMLFormElement | null>(null)
+const newPwdFormRef = ref<HTMLFormElement | null>(null)
+
+// 表单对齐方式
+const labelPosition = ref<string>('top')
 
 // 控制弹窗的状态
 const state = reactive({
@@ -31,25 +33,8 @@ const state = reactive({
   changePwdDialog: false
 })
 
-// 打开忘记密码弹窗
-const open = () => {
-  state.forgetPwdDialog = true
-}
-
-// 打开修改密码弹窗
-const changePwd = () => {
-  state.forgetPwdDialog = false
-  state.changePwdDialog = true
-}
-
-// 取消修改密码，返回忘记密码弹窗
-const changeCancel = () => {
-  state.changePwdDialog = false
-  state.forgetPwdDialog = true
-}
-
 // 验证两次输入的密码是否一致
-const pwdValid = () => {
+const pwdValid = (): boolean => {
   if (forgetData.password !== forgetData.repassword) {
     ElMessage.error('两次输入的密码不一致，请重新输入')
     return false
@@ -57,45 +42,77 @@ const pwdValid = () => {
   return true
 }
 
+// 表单验证规则
+const rules: Record<string, any> = {
+  account: [
+    { required: true, message: '请输入您的注册账号', trigger: 'blur' },
+    { min: 1, max: 6, message: '账号长度在1到6个字符', trigger: 'blur' }
+  ],
+  email: [
+    { required: true, message: '请输入您的个人邮箱', trigger: 'blur' },
+    { type: 'email', message: '请输入正确的邮箱格式', trigger: 'blur' }
+  ],
+  password: [{ required: true, message: '请输入您的新密码', trigger: 'blur' }],
+  repassword: [
+    { required: true, message: '请再次输入您的新密码', trigger: 'blur' },
+    { validator: pwdValid, trigger: 'blur' }
+  ]
+}
+
+// 打开忘记密码弹窗
+const open = (): void => {
+  state.forgetPwdDialog = true
+}
+
+// 打开修改密码弹窗
+const changePwd = async (): Promise<void> => {
+  if (forgetFormRef.value) {
+    forgetFormRef.value.validate(async (valid: boolean) => {
+      if (valid) {
+        state.forgetPwdDialog = false
+        state.changePwdDialog = true
+      } else {
+        ElMessage.error('请填写信息')
+      }
+    })
+  }
+}
+
+// 取消修改密码，返回忘记密码弹窗
+const changeCancel = (): void => {
+  state.changePwdDialog = false
+  state.forgetPwdDialog = true
+}
+
 // 提交表单
-const commit = async () => {
+const commit = async (): Promise<void> => {
   // 如果密码验证失败，直接返回
   if (!pwdValid()) {
     return
   }
-  // 关闭弹窗
-  state.forgetPwdDialog = false
-  state.changePwdDialog = false
-  // 调用API修改密码
-  const res = await forgetPwdAPI({
-    account: forgetData.account,
-    email: forgetData.email,
-    password: forgetData.password
-  })
-  // 如果修改成功，显示成功消息
-  if (res.status === 200) {
-    ElMessage.success(res.data.msg)
+  // 表单验证
+  if (newPwdFormRef.value) {
+    newPwdFormRef.value.validate(async (valid: boolean) => {
+      if (valid) {
+        console.log('通过验证')
+
+        // 调用API修改密码
+        const res = await forgetPwdAPI({
+          account: forgetData.account,
+          email: forgetData.email,
+          password: forgetData.password
+        })
+        // 如果修改成功，显示成功消息
+        if (res.status === 200) {
+          ElMessage.success(res.data.msg)
+        }
+        // 关闭弹窗
+        state.forgetPwdDialog = false
+        state.changePwdDialog = false
+      }
+    })
   }
 }
-
-// 表单验证规则
-const rules = reactive({
-  account: [
-    { required: true, message: '请输入您的注册账号', trigger: 'blur' }, // 必填
-    { min: 1, max: 6, message: '账号长度在1到6个字符', trigger: 'blur' } // 长度限制
-  ],
-  email: [
-    { required: true, message: '请输入您的个人邮箱', trigger: 'blur' }, // 必填
-    { type: 'email', message: '请输入正确的邮箱格式', trigger: 'blur' } // 邮箱格式
-  ],
-  password: [
-    { required: true, message: '请输入您的新密码', trigger: 'blur' } // 必填
-  ],
-  repassword: [
-    { required: true, message: '请再次输入您的新密码', trigger: 'blur' }, // 必填
-    { validator: pwdValid, trigger: 'blur' } // 自定义验证规则
-  ]
-})
 
 // 向父组件暴露方法
 defineExpose({ open, rules })
