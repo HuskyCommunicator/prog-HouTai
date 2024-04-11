@@ -1,31 +1,66 @@
 <script setup lang="ts">
-import { reactive, ref } from 'vue'
+import { onMounted, reactive, ref } from 'vue'
 import forget from './components/forget_password.vue'
-const activeName = ref('login')
-//表单数据类型
+import { loginAPI } from '@/apis/authAPI'
+import { ElMessage } from 'element-plus'
+// 定义表单数据的接口
 interface formData {
   account: string
   password: string
   repassword?: string
 }
-// 登录表单数据
+
+// 初始化登录表单数据
 const loginData: formData = reactive({
   account: '11',
   password: '11'
 })
-// 注册表单数据
+
+// 初始化注册表单数据
 const registerData: formData = reactive({
   account: '11',
   password: '11',
   repassword: '11'
 })
-// 忘记密码弹窗
+
+// 创建对登录表单和注册表单的引用
+const loginForm = ref()
+const registerForm = ref()
+
+// 创建对忘记密码弹窗的引用
 const forgetPwd = ref()
+
+// 当前活动的标签页名称
+const activeName = ref('login')
+
+// 表单验证规则
+const rules = ref()
+
+// 在组件挂载后，获取子组件的表单验证规则
+onMounted(() => {
+  rules.value = forgetPwd.value.rules
+})
+
 // 打开忘记密码弹窗
 const openForget = () => {
   forgetPwd.value.open()
 }
+//登录
+const login = async () => {
+  const { account, password } = loginData
+  loginForm.value.validate(async (valid: any) => {
+    if (valid) {
+      try {
+        const res = await loginAPI({ account, password })
+        if (res.status === 200) {
+          ElMessage.success('登录成功')
+        }
+      } catch (err: any) {}
+    }
+  })
+}
 </script>
+
 <template>
   <div class="common-layout">
     <el-container>
@@ -43,13 +78,13 @@ const openForget = () => {
             <el-tabs v-model="activeName" class="demo-tabs" :stretch="true">
               <!-- 登录 -->
               <el-tab-pane label="登录" name="login">
-                <el-form class="login-form">
+                <el-form class="login-form" :rules="rules" ref="loginForm" :model="loginData">
                   <!-- 账号 -->
-                  <el-form-item label="账号">
+                  <el-form-item label="账号" prop="account">
                     <el-input v-model="loginData.account" placeholder="请输入账号" />
                   </el-form-item>
                   <!-- 密码 -->
-                  <el-form-item label="密码">
+                  <el-form-item label="密码" prop="password">
                     <el-input v-model="loginData.password" placeholder="请输入密码" />
                   </el-form-item>
                   <!-- 底部 -->
@@ -60,7 +95,7 @@ const openForget = () => {
                     </div>
                     <!-- 登录按钮 -->
                     <div class="footer-button">
-                      <el-button type="primary">登录</el-button>
+                      <el-button type="primary" @click="login">登录</el-button>
                     </div>
                     <!-- 转到注册 -->
                     <div class="footer-go-register">
@@ -72,20 +107,20 @@ const openForget = () => {
               </el-tab-pane>
               <!-- 注册 -->
               <el-tab-pane label="注册" name="register">
-                <el-form class="register-form">
+                <el-form class="register-form" ref="registerForm" :model="registerData" :rules>
                   <!-- 账号 -->
-                  <el-form-item label="账号">
+                  <el-form-item label="账号" prop="account">
                     <el-input v-model="registerData.account" placeholder="账号长度1-6位" />
                   </el-form-item>
                   <!-- 密码 -->
-                  <el-form-item label="密码">
+                  <el-form-item label="密码" prop="password">
                     <el-input
                       v-model="registerData.password"
                       placeholder="密码长度1-6位 包括字母和数字"
                     />
                   </el-form-item>
                   <!-- 确认密码 -->
-                  <el-form-item label="确认密码">
+                  <el-form-item label="确认密码" prop="repassword">
                     <el-input v-model="registerData.repassword" placeholder="请再次输入密码" />
                   </el-form-item>
                   <!-- 注册按钮 -->

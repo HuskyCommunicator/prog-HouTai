@@ -15,13 +15,16 @@ const UserModel = {
           reject(err);
         }
         // 否则，解析Promise并返回结果
-        else resolve(results[0]);
+        else {
+          console.log("success", results);
+          resolve(results[0]);
+        }
       });
     }).catch((err) => {
       console.error("Error in findUserByAccount:", err);
+      // 在这里处理错误，而不是在外部
     });
   },
-
   // 插入新用户--添加用户
   insertUser: (user) => {
     return new Promise((resolve, reject) => {
@@ -39,6 +42,26 @@ const UserModel = {
       });
     }).catch((err) => {
       console.error("Error in insertUser:", err);
+    });
+  },
+
+  // 更新用户信息--修改用户
+  updateUser: ({ account, password }) => {
+    return new Promise((resolve, reject) => {
+      //sql语句
+      const updateSql = "update users set password = ? where account = ?";
+      // 执行更新
+      db.query(updateSql, [password, account], (err, results) => {
+        // 如果有错误，拒绝Promise
+        if (err) {
+          console.error(err);
+          reject(err);
+        }
+        // 否则，解析Promise并返回结果
+        else resolve(results[0]);
+      });
+    }).catch((err) => {
+      console.error("Error in findUserByAccount:", err);
     });
   },
 };

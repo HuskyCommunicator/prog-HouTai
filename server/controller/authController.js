@@ -15,7 +15,7 @@ const authController = {
   // 处理用户注册请求
   reg: async (req, res) => {
     // 从请求体中获取账号和密码
-    const { account, password } = req.body;
+    const { account, password, email } = req.body;
 
     // 检查账号和密码是否存在
     if (!account || !password) {
@@ -43,6 +43,7 @@ const authController = {
       identity,
       create_time,
       status,
+      email,
     });
 
     // 检查是否插入成功
@@ -62,6 +63,7 @@ const authController = {
 
     // 查询数据库，检查账号是否存在
     const user = await authService.findOne({ account });
+
     if (!user) {
       return sendRes(res, 400, "账号不存在");
     }
@@ -88,6 +90,25 @@ const authController = {
 
     // 发送成功的响应到客户端
     return sendRes(res, 200, "登录成功");
+  },
+
+  forgetPwd: async (req, res) => {
+    const { account, email, password } = req.body;
+    const user = await authService.findOne({ account });
+    if (!user) {
+      return sendRes(res, 400, "账号不存在");
+    }
+    if (user.email !== email) {
+      return sendRes(res, 400, "邮箱不匹配");
+    }
+    const encryptedPassword = bcrypt.hashSync(password, 10);
+
+    const result = await authService.update({
+      account,
+      password: encryptedPassword,
+    });
+    // 发送成功的响应到客户端
+    return sendRes(res, 200, "修改成功", result);
   },
 };
 

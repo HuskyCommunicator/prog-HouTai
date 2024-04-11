@@ -4,7 +4,7 @@ Joi.objectId = require("joi-objectid")(Joi);
 
 const sendRes = require("../utils/sendRes.js");
 
-//定义总处理函数
+// 验证数据中间件
 const valid = async (req, res, next) => {
   try {
     //进行数据验证
@@ -18,7 +18,7 @@ const valid = async (req, res, next) => {
     next();
   } catch (err) {
     //如果出现错误，则返回服务器错误信息
-    sendRes(res, 500, "服务器错误");
+    sendRes(res, 500, "服务器错误 验证失败");
   }
 };
 
@@ -28,11 +28,12 @@ const validate = (body) => {
     account: Joi.string()
       .required()
       .max(6)
-      .messages({ "any.required": "缺少必选的参数username" }),
+      .messages({ "any.required": "缺少必选的参数account" }),
     password: Joi.string()
       .min(1)
       .required()
-      .messages({ "any.required": "缺少必选的参数username" }),
+      .messages({ "any.required": "缺少必选的参数password" }),
+    email: Joi.string().email(),
   });
   return schema.validate(body);
 };

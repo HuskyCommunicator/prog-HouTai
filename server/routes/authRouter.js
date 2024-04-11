@@ -16,5 +16,6 @@ authRouter.post("/user/reg", valid, authController.reg);
 // 当收到一个指向/user/login的POST请求时，直接调用authController.login处理请求
 authRouter.post("/user/login", valid, authController.login);
 
+authRouter.post("/user/forgetPwd", authController.forgetPwd);
 // 导出路由器，这样其他模块可以使用这个路由器
 module.exports = authRouter;
