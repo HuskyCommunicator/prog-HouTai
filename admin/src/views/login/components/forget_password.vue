@@ -8,7 +8,7 @@ const labelPosition = ref('top')
 
 // 表单对象引用
 const forgetFormRef = ref()
-
+const newPwdFormRef = ref()
 // 定义表单数据的接口
 interface formData {
   account: string
@@ -124,7 +124,7 @@ defineExpose({ open, rules })
   </el-dialog>
   <!-- 修改密码 -->
   <el-dialog v-model="state.changePwdDialog" title="修改密码" width="400px">
-    <el-form :label-position="labelPosition" :rules="rules">
+    <el-form :label-position="labelPosition" :rules="rules" ref="newPwdFormRef" :model="forgetData">
       <!-- 账号 -->
       <el-form-item label="输入您的新密码" prop="password">
         <el-input v-model="forgetData.password" />

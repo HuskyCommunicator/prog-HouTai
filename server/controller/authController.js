@@ -101,6 +101,7 @@ const authController = {
     if (user.email !== email) {
       return sendRes(res, 400, "邮箱不匹配");
     }
+
     const encryptedPassword = bcrypt.hashSync(password, 10);
 
     const result = await authService.update({

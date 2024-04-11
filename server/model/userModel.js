@@ -16,7 +16,6 @@ const UserModel = {
         }
         // 否则，解析Promise并返回结果
         else {
-          console.log("success", results);
           resolve(results[0]);
         }
       });
