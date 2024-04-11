@@ -14,10 +14,10 @@ interface formData {
 
 // 初始化表单数据
 const forgetData: formData = reactive({
-  account: '11',
-  email: '11@qq.com',
-  password: 'aa',
-  repassword: 'as'
+  account: '',
+  email: '',
+  password: '',
+  repassword: ''
 })
 
 // 表单对象引用
@@ -157,8 +157,4 @@ defineExpose({ open, rules })
     </template>
   </el-dialog>
 </template>
-<style lang="scss" scoped>
-.el-dialog {
-  max-height: 90vh;
-}
-</style>
+<style lang="scss" scoped></style>

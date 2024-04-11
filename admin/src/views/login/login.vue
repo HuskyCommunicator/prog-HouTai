@@ -4,7 +4,8 @@ import { onMounted, reactive, ref } from 'vue'
 import { loginAPI } from '@/apis/authAPI'
 import { ElMessage } from 'element-plus'
 import Forget from './components/forget_password.vue'
-
+import { useRouter } from 'vue-router'
+const router = useRouter()
 // 定义表单数据的接口
 interface formData {
   account: string
@@ -67,6 +68,7 @@ const login = async (): Promise<void> => {
           const res = await loginAPI({ account, password })
           if (res.status === 200) {
             ElMessage.success('登录成功')
+            router.push('/menu')
           }
         } catch (err: any) {
           // 已在拦截器中处理过错误信息，此处不再重复处理
