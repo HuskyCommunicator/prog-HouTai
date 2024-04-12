@@ -15,6 +15,7 @@ const props = defineProps(['item'])
   padding: 0 20px;
   display: flex;
   align-items: center;
+  background-color: rgb(176, 176, 176);
 }
 :deep(.el-breadcrumb__item) {
   height: 30px;

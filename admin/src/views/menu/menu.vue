@@ -6,13 +6,18 @@ import Header from './components/header.vue'
   <div class="common-layout">
     <el-container>
       <el-aside width="200px">
+        <!-- 侧边栏组件 -->
         <Aside />
       </el-aside>
       <el-container>
         <el-header>
+          <!-- 头部组件 -->
           <Header />
         </el-header>
-        <el-main><router-view></router-view></el-main>
+        <el-main>
+          <!-- 主体内容 -->
+          <router-view></router-view>
+        </el-main>
       </el-container>
     </el-container>
   </div>
@@ -28,5 +33,6 @@ import Header from './components/header.vue'
 }
 .el-main {
   padding: 0;
+  background-color: rgb(251, 251, 251);
 }
 </style>
