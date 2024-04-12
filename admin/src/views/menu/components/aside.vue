@@ -65,7 +65,7 @@ import { ref } from 'vue'
       <el-icon><location /></el-icon>
       <span>登录日志</span>
     </el-menu-item>
-    <el-menu-item index="/home">
+    <el-menu-item index="/set">
       <el-icon><Tools /></el-icon>
       <span>系统设置</span>
     </el-menu-item>

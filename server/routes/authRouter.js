@@ -8,7 +8,7 @@ var authRouter = express.Router();
 var authController = require("../controller/authController.js");
 
 // 引入valid中间件，这个中间件用于验证请求体的数据
-var valid = require("../middleware/validate.js");
+const valid = require("../middleware/validate");
 //文件上传
 const multer = require("multer");
 const upload = multer({ dest: "public/avatar/" });
@@ -23,6 +23,11 @@ authRouter.post("/user/login", valid, authController.login);
 authRouter.post("/user/forgetPwd", authController.forgetPwd);
 
 //更新
-authRouter.put("/user/update", upload.single("file"), authController.update);
+authRouter.put(
+  "/user/update",
+  valid,
+  upload.single("file"),
+  authController.update
+);
 
 module.exports = authRouter;

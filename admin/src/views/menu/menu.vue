@@ -26,4 +26,7 @@ import Header from './components/header.vue'
 .el-header {
   background-color: #2b303b;
 }
+.el-main {
+  padding: 0;
+}
 </style>

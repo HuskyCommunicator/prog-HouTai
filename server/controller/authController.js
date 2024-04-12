@@ -139,7 +139,7 @@ const authController = {
       email,
       password,
       name,
-      sex,
+      sex: sex === "男" ? "1" : "0",
       avatar,
     });
 
