@@ -13,6 +13,30 @@ export const loginAPI = ({ account, password }: { account: string; password: str
     return Promise.reject(error)
   })
 }
+
+//注册接口
+export const regAPI = ({
+  email,
+  account,
+  password
+}: {
+  email: string
+  account: string
+  password: string
+}) => {
+  return instance({
+    url: '/user/reg',
+    method: 'post',
+    data: {
+      email,
+      account,
+      password
+    }
+  }).catch((error) => {
+    return Promise.reject(error)
+  })
+}
+
 //忘记密码接口
 export const forgetPwdAPI = ({
   account,

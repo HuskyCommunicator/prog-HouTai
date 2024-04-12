@@ -1,16 +1,17 @@
 <script setup lang="ts">
 // 导入所需的库和API
 import { onMounted, reactive, ref } from 'vue'
-import { loginAPI } from '@/apis/authAPI'
+import { loginAPI, regAPI } from '@/apis/authAPI'
 import { ElMessage } from 'element-plus'
 import Forget from './components/forget_password.vue'
+
 import { useRouter } from 'vue-router'
 const router = useRouter()
 // 定义表单数据的接口
 interface formData {
+  email?: string
   account: string
   password: string
-  repassword?: string
 }
 
 // 初始化登录表单数据
@@ -21,9 +22,9 @@ const loginData: formData = reactive({
 
 // 初始化注册表单数据
 const registerData: formData = reactive({
+  email: '11@qq.com',
   account: '11',
-  password: '11',
-  repassword: '11'
+  password: '11'
 })
 
 // 创建对登录表单和注册表单的引用
@@ -50,8 +51,6 @@ onMounted(() => {
 const openForget = () => {
   if (forgetPwd.value) {
     forgetPwd.value.open()
-  } else {
-    console.log('gg')
   }
 }
 //
@@ -69,6 +68,25 @@ const login = async (): Promise<void> => {
           if (res.status === 200) {
             ElMessage.success('登录成功')
             router.push('/menu')
+          }
+        } catch (err: any) {
+          // 已在拦截器中处理过错误信息，此处不再重复处理
+        }
+      }
+    })
+  }
+}
+// 注册
+const register = async (): Promise<void> => {
+  const { email, account, password } = registerData
+  if (registerForm.value) {
+    registerForm.value.validate(async (valid: boolean) => {
+      if (valid) {
+        try {
+          const res = await regAPI({ email: email!, account, password })
+          if (res.status === 200) {
+            ElMessage.success('注册成功 请登录')
+            activeName.value = 'login'
           }
         } catch (err: any) {
           // 已在拦截器中处理过错误信息，此处不再重复处理
@@ -124,23 +142,23 @@ const login = async (): Promise<void> => {
             <el-tab-pane label="注册" name="register">
               <el-form class="register-form" ref="registerForm" :model="registerData" :rules>
                 <!-- 账号 -->
+                <el-form-item label="邮箱" prop="email">
+                  <el-input v-model="registerData.email" placeholder="请输入邮箱" />
+                </el-form-item>
+                <!-- 密码 -->
                 <el-form-item label="账号" prop="account">
                   <el-input v-model="registerData.account" placeholder="账号长度1-6位" />
                 </el-form-item>
-                <!-- 密码 -->
+                <!-- 确认密码 -->
                 <el-form-item label="密码" prop="password">
                   <el-input
                     v-model="registerData.password"
                     placeholder="密码长度1-6位 包括字母和数字"
                   />
                 </el-form-item>
-                <!-- 确认密码 -->
-                <el-form-item label="确认密码" prop="repassword">
-                  <el-input v-model="registerData.repassword" placeholder="请再次输入密码" />
-                </el-form-item>
                 <!-- 注册按钮 -->
                 <div class="footer-button">
-                  <el-button type="primary">注册</el-button>
+                  <el-button type="primary" @click="register">注册</el-button>
                 </div>
               </el-form>
             </el-tab-pane>

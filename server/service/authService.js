@@ -12,7 +12,7 @@ const authService = {
     status,
     email,
   }) => {
-    if (email) {
+    try {
       return await userModel.insertUser({
         account,
         password,
@@ -21,28 +21,45 @@ const authService = {
         status,
         email,
       });
-    } else {
-      return await userModel.insertUser({
-        account,
-        password,
-        identity,
-        create_time,
-        status,
-      });
+    } catch (err) {
+      console.error("Error in create:", err);
     }
   },
 
   //查找用户
-  findOne: async ({ account }) => {
-    return userModel.findUserByAccount(account);
+  findOne: async ({ account, id }) => {
+    try {
+      return await userModel.findUserByAccount(account);
+    } catch (err) {
+      console.error("Error in findOne:", err);
+    }
   },
 
-  //更新用户
-  update: async ({ account, password }) => {
-    return await userModel.updateUser({
-      account,
-      password,
-    });
+  //更新用户密码
+  updatePwd: async ({ account, password }) => {
+    try {
+      return await userModel.updateUser({
+        account,
+        password,
+      });
+    } catch (err) {
+      console.error("Error in updatePwd:", err);
+    }
+  },
+  //更新用户信息
+  update: async ({ account, email, password, name, sex, avatar }) => {
+    try {
+      return await userModel.updateUserInfo({
+        account,
+        email,
+        password,
+        name,
+        sex,
+        avatar,
+      });
+    } catch (err) {
+      console.error("Error in update:", err);
+    }
   },
 };
 

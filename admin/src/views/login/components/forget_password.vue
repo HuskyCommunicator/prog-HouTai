@@ -91,8 +91,6 @@ const commit = async (): Promise<void> => {
   if (newPwdFormRef.value) {
     newPwdFormRef.value.validate(async (valid: boolean) => {
       if (valid) {
-        console.log('通过验证')
-
         // 调用API修改密码
         const res = await forgetPwdAPI({
           account: forgetData.account,

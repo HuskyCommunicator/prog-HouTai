@@ -12,15 +12,10 @@ const JWT = require("../utils/jwt.js");
 
 // 定义authController对象，用于处理与用户认证相关的HTTP请求
 const authController = {
-  // 处理用户注册请求
+  //注册
   reg: async (req, res) => {
     // 从请求体中获取账号和密码
-    const { account, password, email } = req.body;
-
-    // 检查账号和密码是否存在
-    if (!account || !password) {
-      return sendRes(res, 400, "账号名或密码不能为空");
-    }
+    const { email, account, password } = req.body;
 
     // 查询数据库，检查账号是否已存在
     const user = await authService.findOne({ account });
@@ -56,7 +51,7 @@ const authController = {
     return sendRes(res, 200, "注册成功");
   },
 
-  // 处理用户登录请求
+  //登录
   login: async (req, res) => {
     // 从请求体中获取账号和密码
     const { account, password } = req.body;
@@ -89,9 +84,10 @@ const authController = {
     res.header("Authorization", "Bearer " + token);
 
     // 发送成功的响应到客户端
-    return sendRes(res, 200, "登录成功");
+    return sendRes(res, 200, "登录成功", user);
   },
 
+  //忘记密码
   forgetPwd: async (req, res) => {
     const { account, email, password } = req.body;
     const user = await authService.findOne({ account });
@@ -104,12 +100,51 @@ const authController = {
 
     const encryptedPassword = bcrypt.hashSync(password, 10);
 
-    const result = await authService.update({
+    const result = await authService.updatePwd({
       account,
       password: encryptedPassword,
     });
     // 发送成功的响应到客户端
     return sendRes(res, 200, "修改成功", result);
+  },
+
+  //更新用户
+  update: async (req, res) => {
+    // 如果请求中包含文件，则设置 avatar 为文件的路径，否则设置为空字符串
+    const avatar = req.file ? `/avatar/${req.file.filename}` : "";
+
+    const { email, oldPassword, newPassword, name, sex, account } = req.body;
+
+    // 查询数据库，检查账号是否存在
+    const user = await authService.findOne({ account });
+
+    if (!user) {
+      return sendRes(res, 400, "用户不存在");
+    }
+
+    // 如果请求中包含新密码和旧密码，则进行密码验证
+    let password = user.password;
+    if (newPassword && oldPassword) {
+      //比较密码
+      const pwd = await bcrypt.compare(oldPassword, user.password);
+      if (!pwd) {
+        return sendRes(res, 400, "旧密码不匹配");
+      }
+      password = bcrypt.hashSync(newPassword, 10);
+    }
+
+    //更新用户信息
+    const result = await authService.update({
+      account,
+      email,
+      password,
+      name,
+      sex,
+      avatar,
+    });
+
+    // 发送成功的响应到客户端
+    return sendRes(res, 200, "更新成功", result);
   },
 };
 

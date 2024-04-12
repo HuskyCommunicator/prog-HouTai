@@ -2,7 +2,7 @@
 const db = require("../db/index.js");
 
 const UserModel = {
-  // 根据账号查找用户--获取用户
+  //获取用户
   findUserByAccount: (account) => {
     return new Promise((resolve, reject) => {
       // SQL查询语句
@@ -24,7 +24,7 @@ const UserModel = {
       // 在这里处理错误，而不是在外部
     });
   },
-  // 插入新用户--添加用户
+  // 添加用户
   insertUser: (user) => {
     return new Promise((resolve, reject) => {
       // SQL插入语句
@@ -44,7 +44,7 @@ const UserModel = {
     });
   },
 
-  // 更新用户信息--修改用户
+  // 更新密码
   updateUser: ({ account, password }) => {
     return new Promise((resolve, reject) => {
       //sql语句
@@ -59,6 +59,30 @@ const UserModel = {
         // 否则，解析Promise并返回结果
         else resolve(results[0]);
       });
+    }).catch((err) => {
+      console.error("Error in findUserByAccount:", err);
+    });
+  },
+  //更新信息
+  updateUserInfo: ({ email, password, name, sex, avatar, account }) => {
+    return new Promise((resolve, reject) => {
+      //sql语句
+      const updateSql =
+        "update users set email = ?, password = ?, name = ?, sex = ?, avatar = ? where account = ?";
+      // 执行更新
+      db.query(
+        updateSql,
+        [email, password, name, sex, avatar, account],
+        (err, results) => {
+          // 如果有错误，拒绝Promise
+          if (err) {
+            console.error(err);
+            reject(err);
+          }
+          // 否则，解析Promise并返回结果
+          else resolve(results[0]);
+        }
+      );
     }).catch((err) => {
       console.error("Error in findUserByAccount:", err);
     });

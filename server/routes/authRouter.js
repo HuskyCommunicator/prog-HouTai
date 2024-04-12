@@ -9,13 +9,20 @@ var authController = require("../controller/authController.js");
 
 // 引入valid中间件，这个中间件用于验证请求体的数据
 var valid = require("../middleware/validate.js");
+//文件上传
+const multer = require("multer");
+const upload = multer({ dest: "public/avatar/" });
 
-// 当收到一个指向/user/reg的POST请求时，首先调用valid中间件进行数据验证，然后调用authController.reg处理请求
+// 注册
 authRouter.post("/user/reg", valid, authController.reg);
 
-// 当收到一个指向/user/login的POST请求时，直接调用authController.login处理请求
+// 登录
 authRouter.post("/user/login", valid, authController.login);
 
+//忘记密码
 authRouter.post("/user/forgetPwd", authController.forgetPwd);
-// 导出路由器，这样其他模块可以使用这个路由器
+
+//更新
+authRouter.put("/user/update", upload.single("file"), authController.update);
+
 module.exports = authRouter;
