@@ -7,10 +7,9 @@ const sendRes = require("../utils/sendRes.js");
 // 验证数据中间件
 const valid = async (req, res, next) => {
   try {
-    console.log(req.body, "req.body");
     //进行数据验证
     const { error, value } = validate(req.body);
-    console.log(value, "body");
+
     //如果验证失败，则返回错误信息
     if (error) {
       return sendRes(res, 400, error.details[0].message);

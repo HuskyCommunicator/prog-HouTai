@@ -1,9 +1,8 @@
 // 引入用户模型
 const userModel = require("../model/userModel.js");
 
-//添加用户
-const authService = {
-  //创建用户
+//登录页-注册
+const userService = {
   create: async ({
     account,
     password,
@@ -64,4 +63,4 @@ const authService = {
 };
 
 // 导出 authService，使其可以在其他文件中被引用
-module.exports = authService;
+module.exports = userService;

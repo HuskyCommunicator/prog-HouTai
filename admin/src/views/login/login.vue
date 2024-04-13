@@ -4,9 +4,10 @@ import { onMounted, reactive, ref } from 'vue'
 import { loginAPI, regAPI } from '@/apis/authAPI'
 import { ElMessage } from 'element-plus'
 import Forget from './components/forget_password.vue'
-
+import { useUserStore } from '@/stores/userStore'
 import { useRouter } from 'vue-router'
 const router = useRouter()
+const userStore = useUserStore()
 // 定义表单数据的接口
 interface formData {
   email?: string
@@ -67,6 +68,7 @@ const login = async (): Promise<void> => {
           const res = await loginAPI({ account, password })
           if (res.status === 200) {
             ElMessage.success('登录成功')
+            userStore.userInfo = res.data.data
             router.push('/menu')
           }
         } catch (err: any) {

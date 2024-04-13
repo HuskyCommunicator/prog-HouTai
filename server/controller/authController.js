@@ -1,5 +1,5 @@
 // 引入 authService，用于处理与用户认证相关的业务逻辑
-var authService = require("../service/authService.js");
+var userService = require("../service/userService.js");
 
 // 引入bcrypt库，用于对用户密码进行加密处理
 const bcrypt = require("bcrypt");
@@ -18,7 +18,7 @@ const authController = {
     const { email, account, password } = req.body;
 
     // 查询数据库，检查账号是否已存在
-    const user = await authService.findOne({ account });
+    const user = await userService.findOne({ account });
     if (user) {
       return sendRes(res, 400, "账号已存在");
     }
@@ -32,7 +32,7 @@ const authController = {
     const status = 0;
 
     // 插入新用户到数据库
-    const result = await authService.create({
+    const result = await userService.create({
       account,
       password: encryptedPassword,
       identity,
@@ -57,7 +57,7 @@ const authController = {
     const { account, password } = req.body;
 
     // 查询数据库，检查账号是否存在
-    const user = await authService.findOne({ account });
+    const user = await userService.findOne({ account });
 
     if (!user) {
       return sendRes(res, 400, "账号不存在");
@@ -90,7 +90,7 @@ const authController = {
   //忘记密码
   forgetPwd: async (req, res) => {
     const { account, email, password } = req.body;
-    const user = await authService.findOne({ account });
+    const user = await userService.findOne({ account });
     if (!user) {
       return sendRes(res, 400, "账号不存在");
     }
@@ -100,7 +100,7 @@ const authController = {
 
     const encryptedPassword = bcrypt.hashSync(password, 10);
 
-    const result = await authService.updatePwd({
+    const result = await userService.updatePwd({
       account,
       password: encryptedPassword,
     });
@@ -116,7 +116,7 @@ const authController = {
     const { email, oldPassword, newPassword, name, sex, account } = req.body;
 
     // 查询数据库，检查账号是否存在
-    const user = await authService.findOne({ account });
+    const user = await userService.findOne({ account });
 
     if (!user) {
       return sendRes(res, 400, "用户不存在");
@@ -134,7 +134,7 @@ const authController = {
     }
 
     //更新用户信息
-    const result = await authService.update({
+    const result = await userService.update({
       account,
       email,
       password,
