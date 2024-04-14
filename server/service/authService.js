@@ -26,9 +26,9 @@ const authService = {
   },
 
   //查找用户
-  login: async ({ account }) => {
+  findUser: async ({ account }) => {
     try {
-      return await authModel.findPwdByAccount(account);
+      return await authModel.findUser(account);
     } catch (err) {
       console.error("Error in findOne:", err);
     }
@@ -37,27 +37,12 @@ const authService = {
   //更新用户密码
   updatePwd: async ({ account, password }) => {
     try {
-      return await authModel.updateUser({
+      return await authModel.updatePwd({
         account,
         password,
       });
     } catch (err) {
       console.error("Error in updatePwd:", err);
-    }
-  },
-  //更新用户信息
-  update: async ({ account, email, password, name, sex, avatar }) => {
-    try {
-      return await authModel.updateUserInfo({
-        account,
-        email,
-        password,
-        name,
-        sex,
-        avatar,
-      });
-    } catch (err) {
-      console.error("Error in update:", err);
     }
   },
 };

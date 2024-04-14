@@ -18,7 +18,7 @@ const authController = {
     const { email, account, password } = req.body;
 
     // 查询数据库，检查账号是否已存在
-    const user = await authService.login({ account });
+    const user = await authService.findUser({ account });
     if (user) {
       return sendRes(res, 400, "账号已存在");
     }
@@ -57,7 +57,7 @@ const authController = {
     const { account, password } = req.body;
 
     // 查询数据库，检查账号是否存在
-    const result = await authService.login({ account });
+    const result = await authService.findUser({ account });
 
     if (!result) {
       return sendRes(res, 400, "账号不存在");
@@ -93,7 +93,7 @@ const authController = {
   //忘记密码
   forgetPwd: async (req, res) => {
     const { account, email, password } = req.body;
-    const user = await authService.getUser({ account });
+    const user = await authService.findUser({ account });
     if (!user) {
       return sendRes(res, 400, "账号不存在");
     }
@@ -109,45 +109,6 @@ const authController = {
     });
     // 发送成功的响应到客户端
     return sendRes(res, 200, "修改成功", result);
-  },
-
-  //更新用户
-  update: async (req, res) => {
-    // 如果请求中包含文件，则设置 avatar 为文件的路径，否则设置为空字符串
-    const avatar = req.file ? `/avatar/${req.file.filename}` : "";
-
-    const { email, oldPassword, newPassword, name, sex, account } = req.body;
-
-    // 查询数据库，检查账号是否存在
-    const user = await authService.findOne({ account });
-
-    if (!user) {
-      return sendRes(res, 400, "用户不存在");
-    }
-
-    // 如果请求中包含新密码和旧密码，则进行密码验证
-    let password = user.password;
-    if (newPassword && oldPassword) {
-      //比较密码
-      const pwd = await bcrypt.compare(oldPassword, user.password);
-      if (!pwd) {
-        return sendRes(res, 400, "旧密码不匹配");
-      }
-      password = bcrypt.hashSync(newPassword, 10);
-    }
-
-    //更新用户信息
-    const result = await authService.update({
-      account,
-      email,
-      password,
-      name,
-      sex: sex === "男" ? "1" : "0",
-      avatar,
-    });
-
-    // 发送成功的响应到客户端
-    return sendRes(res, 200, "更新成功", result);
   },
 };
 

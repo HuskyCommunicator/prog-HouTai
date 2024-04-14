@@ -25,6 +25,7 @@ const userService = {
       });
     } catch (err) {
       console.error("Error in update:", err);
+      return { error: "更新失败" }; // 返回一个表示错误的对象
     }
   },
 };

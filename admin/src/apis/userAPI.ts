@@ -9,3 +9,17 @@ export const getUserInfoAPI = (account: any) => {
     return Promise.reject(error)
   })
 }
+//更新用户信息接口
+export const updateUserInfoAPI = (userForm: any) => {
+  const params = new FormData()
+  for (let i in userForm) {
+    params.append(i, userForm[i])
+  }
+  return instance({
+    url: '/user/updateUserInfo',
+    method: 'put',
+    data: params
+  }).catch((error) => {
+    return Promise.reject(error)
+  })
+}

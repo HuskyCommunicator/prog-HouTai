@@ -5,17 +5,11 @@ import type { Ref } from 'vue'
 
 // 定义用户接口
 interface User {
-  id: number
   account: string
-  identity: string
-  department: string | null
   name: string | null
   email: string
   avatar: string | null
-  create_time: string
   sex: string | null
-  status: number
-  update_time: string | null
 }
 // 定义用户存储
 export const useUserStore = defineStore({
@@ -25,17 +19,11 @@ export const useUserStore = defineStore({
   state: () => {
     // 用户信息，初始值为null
     const userInfo: Ref<User> = ref({
-      id: 0,
       account: '',
-      identity: '',
-      department: null,
       name: null,
       email: '',
       avatar: null,
-      create_time: '',
-      sex: null,
-      status: 0,
-      update_time: null
+      sex: null
     })
     // 设置用户信息的方法
     const setUserInfo = (user: User) => {
@@ -45,17 +33,11 @@ export const useUserStore = defineStore({
     // 清除用户信息的方法
     const clearUserInfo = () => {
       userInfo.value = {
-        id: 0,
         account: '',
-        identity: '',
-        department: null,
         name: null,
         email: '',
         avatar: null,
-        create_time: '',
-        sex: null,
-        status: 0,
-        update_time: null
+        sex: null
       } // 清空用户信息
       localStorage.removeItem('user') // 清除本地存储中的用户信息
       localStorage.removeItem('token') // 清除本地存储中的token

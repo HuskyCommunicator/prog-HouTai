@@ -3,10 +3,10 @@ const db = require("../db/index.js");
 
 const authModel = {
   //获取密码
-  findPwdByAccount: (account) => {
+  findUser: (account) => {
     return new Promise((resolve, reject) => {
       // SQL查询语句
-      const querySql = "select password from users where account = ?";
+      const querySql = "select password, email from users where account = ?";
       // 执行查询
       db.query(querySql, account, (err, results) => {
         // 如果有错误，拒绝Promise
@@ -45,7 +45,7 @@ const authModel = {
   },
 
   // 更新密码
-  updateUser: ({ account, password }) => {
+  updatePwd: ({ account, password }) => {
     return new Promise((resolve, reject) => {
       //sql语句
       const updateSql = "update users set password = ? where account = ?";

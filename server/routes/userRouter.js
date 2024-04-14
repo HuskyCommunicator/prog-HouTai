@@ -20,10 +20,10 @@ userRouter.get("/user/getUserInfo/:account", userController.getUserInfo);
 
 //更新用户信息
 userRouter.put(
-  "/user/updateInfo",
+  "/user/updateUserInfo",
   valid,
   upload.single("file"),
-  userController.update
+  userController.updateUserInfo
 );
 
 module.exports = userRouter;

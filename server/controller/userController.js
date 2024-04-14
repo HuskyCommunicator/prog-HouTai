@@ -1,6 +1,6 @@
 // 引入 authService，用于处理与用户认证相关的业务逻辑
 var userService = require("../service/userService.js");
-
+var authService = require("../service/authService.js");
 // 引入bcrypt库，用于对用户密码进行加密处理
 const bcrypt = require("bcrypt");
 
@@ -19,14 +19,13 @@ const userController = {
     return sendRes(res, 200, "获取成功", user);
   },
   //更新用户信息
-  update: async (req, res) => {
+  updateUserInfo: async (req, res) => {
     // 如果请求中包含文件，则设置 avatar 为文件的路径，否则设置为空字符串
     const avatar = req.file ? `/avatar/${req.file.filename}` : "";
-
     const { email, oldPassword, newPassword, name, sex, account } = req.body;
 
     // 查询数据库，检查账号是否存在
-    const user = await userService.findOne({ account });
+    const user = await authService.findUser({ account });
 
     if (!user) {
       return sendRes(res, 400, "用户不存在");
@@ -44,15 +43,15 @@ const userController = {
     }
 
     //更新用户信息
-    const result = await userService.update({
+    await userService.update({
       account,
       email,
       password,
       name,
-      sex: sex === "男" ? "1" : "0",
+      sex,
       avatar,
     });
-
+    const result = { avatar, account, sex, email, name };
     // 发送成功的响应到客户端
     return sendRes(res, 200, "更新成功", result);
   },

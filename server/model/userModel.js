@@ -7,7 +7,7 @@ const UserModel = {
     return new Promise((resolve, reject) => {
       // SQL查询语句，选择除了password以外的所有字段
       const querySql =
-        "SELECT id, account, identity, department, name, email, create_time, update_time, sex, status, avatar FROM users WHERE account = ?";
+        "SELECT account, name, email, sex, avatar FROM users WHERE account = ?";
       // 执行查询
       db.query(querySql, account, (err, results) => {
         // 如果有错误，拒绝Promise
@@ -50,24 +50,31 @@ const UserModel = {
   updateUserInfo: ({ email, password, name, sex, avatar, account }) => {
     return new Promise((resolve, reject) => {
       //sql语句
-      const updateSql =
-        "update users set email = ?, password = ?, name = ?, sex = ?, avatar = ? where account = ?";
+      let updateSql;
+      let params;
+
+      if (avatar) {
+        updateSql =
+          "update users set email = ?, password = ?, name = ?, sex = ?, avatar = ? where account = ?";
+        params = [email, password, name, sex, avatar, account];
+      } else {
+        updateSql =
+          "update users set email = ?, password = ?, name = ?, sex = ? where account = ?";
+        params = [email, password, name, sex, account];
+      }
+
       // 执行更新
-      db.query(
-        updateSql,
-        [email, password, name, sex, avatar, account],
-        (err, results) => {
-          // 如果有错误，拒绝Promise
-          if (err) {
-            console.error(err);
-            reject(err);
-          }
-          // 否则，解析Promise并返回结果
-          else resolve(results[0]);
+      db.query(updateSql, params, (err, results) => {
+        // 如果有错误，拒绝Promise
+        if (err) {
+          console.error(err);
+          reject(err);
         }
-      );
+        // 否则，解析Promise并返回结果
+        else resolve(results[0]);
+      });
     }).catch((err) => {
-      console.error("Error in findUserByAccount:", err);
+      console.error("Error in updateUserInfo:", err);
     });
   },
 };

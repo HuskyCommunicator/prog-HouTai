@@ -14,8 +14,8 @@ interface formData {
 
 // 初始化表单数据
 const forgetData: formData = reactive({
-  account: '',
-  email: '',
+  account: '11',
+  email: '11@qq.com',
   password: '',
   repassword: ''
 })
@@ -91,19 +91,23 @@ const commit = async (): Promise<void> => {
   if (newPwdFormRef.value) {
     newPwdFormRef.value.validate(async (valid: boolean) => {
       if (valid) {
-        // 调用API修改密码
-        const res = await forgetPwdAPI({
-          account: forgetData.account,
-          email: forgetData.email,
-          password: forgetData.password
-        })
-        // 如果修改成功，显示成功消息
-        if (res.status === 200) {
-          ElMessage.success(res.data.msg)
+        try {
+          // 调用API修改密码
+          const res = await forgetPwdAPI({
+            account: forgetData.account,
+            email: forgetData.email,
+            password: forgetData.password
+          })
+          // 如果修改成功，显示成功消息
+          if (res.status === 200) {
+            ElMessage.success(res.data.msg)
+          }
+          // 关闭弹窗
+          state.forgetPwdDialog = false
+          state.changePwdDialog = false
+        } catch (err) {
+          //
         }
-        // 关闭弹窗
-        state.forgetPwdDialog = false
-        state.changePwdDialog = false
       }
     })
   }

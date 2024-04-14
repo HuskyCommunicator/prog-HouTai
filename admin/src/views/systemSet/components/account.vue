@@ -2,8 +2,9 @@
 // 导入必要的组件和Vue函数
 import { onMounted, reactive, ref } from 'vue'
 import Upload from '@/components/upload.vue'
-import { getUserInfoAPI } from '@/apis/userAPI'
+import { getUserInfoAPI, updateUserInfoAPI } from '@/apis/userAPI'
 import { useUserStore } from '@/stores/userStore'
+import { ElMessage } from 'element-plus'
 
 // 初始化用户存储
 const userStore = useUserStore()
@@ -11,7 +12,6 @@ const userStore = useUserStore()
 // 定义响应式引用
 const userFormRef = ref()
 const dialogVisible = ref(false)
-const userInfo = ref()
 
 // 定义用户表单接口
 interface UserForm {
@@ -43,8 +43,8 @@ const userForm = reactive<UserForm>({
 
 // 初始化性别选项
 const sexOptions = [
-  { label: '男', value: 1 },
-  { label: '女', value: 0 }
+  { label: '男', value: '1' },
+  { label: '女', value: '0' }
 ]
 
 // 获取用户信息
@@ -64,18 +64,23 @@ const handleChange = (file: File) => {
 }
 //表单规则
 const userFormRules = {
-  oldPassword: [{ min: 1, max: 20, message: '长度在 1 到 20 个字符', trigger: 'blur' }],
-  newPassword: [{ min: 1, max: 20, message: '长度在 1 到 20 个字符', trigger: 'blur' }],
+  oldPassword: [{ min: 1, max: 5, message: '长度在 1 到 5 个字符', trigger: 'blur' }],
+  newPassword: [{ min: 1, max: 5, message: '长度在 1 到 5 个字符', trigger: 'blur' }],
   email: [{ type: 'email', message: '请输入正确的邮箱格式', trigger: 'blur' }]
 }
+
 // 表单提交
 const submitForm = () => {
-  console.log(userForm)
-  userFormRef.value.validate((valid: boolean) => {
+  userFormRef.value.validate(async (valid: boolean) => {
     if (valid) {
-      console.log(userForm)
-
-      // 如果表单验证通过，执行提交操作
+      try {
+        const res = await updateUserInfoAPI(userForm)
+        console.log(res.data.data)
+        ElMessage.success(res.data.msg)
+        userStore.setUserInfo(res.data.data)
+      } catch (err) {
+        return
+      }
     }
   })
 }
@@ -137,11 +142,11 @@ const submitForm = () => {
       <!-- 弹窗组件 -->
       <el-dialog v-model="dialogVisible" title="Tips" width="500">
         <span>
-          <el-form-item label="新密码" prop="newPassword">
-            <el-input v-model="userForm.newPassword" placeholder="请输入新密码" />
-          </el-form-item>
           <el-form-item label="旧密码" prop="oldPassword">
             <el-input v-model="userForm.oldPassword" placeholder="请输入旧密码" />
+          </el-form-item>
+          <el-form-item label="新密码" prop="newPassword">
+            <el-input v-model="userForm.newPassword" placeholder="请输入新密码" />
           </el-form-item>
         </span>
         <template #footer>
@@ -151,6 +156,7 @@ const submitForm = () => {
           </div>
         </template>
       </el-dialog>
+      <!--  -->
     </el-form>
   </div>
 </template>
