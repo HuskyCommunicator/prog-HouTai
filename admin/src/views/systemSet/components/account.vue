@@ -75,7 +75,6 @@ const submitForm = () => {
     if (valid) {
       try {
         const res = await updateUserInfoAPI(userForm)
-        console.log(res.data.data)
         ElMessage.success(res.data.msg)
         userStore.setUserInfo(res.data.data)
       } catch (err) {

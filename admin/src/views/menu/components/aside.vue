@@ -73,7 +73,6 @@ import { ref } from 'vue'
 </template>
 <style lang="scss" scoped>
 .el-menu {
-  overflow: hidden;
   border: 0;
 }
 .el-menu-item,

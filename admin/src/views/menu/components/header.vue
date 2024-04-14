@@ -1,6 +1,6 @@
 <script setup lang="ts">
 // 从Vue和用户存储中导入必要的模块
-import { ref, reactive } from 'vue'
+import { ref, reactive, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/userStore'
 
@@ -8,11 +8,11 @@ import { useUserStore } from '@/stores/userStore'
 const userStore = useUserStore()
 const router = useRouter()
 
-// 为圆形URL创建响应式状态
-const state = reactive({
-  circleUrl: 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png'
-})
-
+const avatar = computed(() =>
+  userStore.userInfo.avatar
+    ? 'http://127.0.0.1:3000' + userStore.userInfo.avatar
+    : 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png'
+)
 // 退出函数，用于清除用户信息并导航至登录页面
 const logout = () => {
   // 导航至登录页面
@@ -24,18 +24,18 @@ const logout = () => {
 
 <template>
   <div class="header">
-    <p class="welcome">尊敬的 二哈 欢迎您登陆本系统</p>
+    <p class="welcome">尊敬的 {{ userStore.userInfo.name }} 欢迎您登陆本系统</p>
     <div class="right">
       <!-- icon -->
       <el-icon><Message /></el-icon>
       <!-- 头像 -->
-      <el-avatar :size="42" :src="state.circleUrl"></el-avatar>
+      <el-avatar :size="42" v-if="avatar" :src="avatar"></el-avatar>
       <!-- 下拉框 -->
       <el-dropdown>
         <span class="el-dropdown-link"> 设置 </span>
         <template #dropdown>
           <el-dropdown-menu>
-            <el-dropdown-item>设置账号</el-dropdown-item>
+            <el-dropdown-item @click="router.push('/set')">设置账号</el-dropdown-item>
             <el-dropdown-item>更改头像</el-dropdown-item>
             <el-dropdown-item @click="logout">退出登陆</el-dropdown-item>
           </el-dropdown-menu>

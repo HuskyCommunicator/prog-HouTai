@@ -26,7 +26,9 @@ import Header from './components/header.vue'
 .el-aside {
   height: 100vh;
   background-color: #2b303b;
-  overflow: hidden;
+  overflow: auto; /* 允许滚动 */
+  scrollbar-width: none; /* 隐藏滚动条 - Firefox */
+  -ms-overflow-style: none; /* 隐藏滚动条 - Internet Explorer 10+ */
 }
 .el-header {
   background-color: #2b303b;
