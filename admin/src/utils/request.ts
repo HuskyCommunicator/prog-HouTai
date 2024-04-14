@@ -1,20 +1,25 @@
-import axios from 'axios';
+// 导入axios和element-plus的消息组件
+import axios from 'axios'
+
 import { ElMessage } from 'element-plus'
+
+// 创建axios实例，并设置基础URL和超时时间
 const instance = axios.create({
   baseURL: 'http://localhost:3000',
-  timeout: 1000,
-});
-//添加请求拦截器
+  timeout: 1000
+})
+
+// 添加请求拦截器
 instance.interceptors.request.use(
   function (config) {
-    // 在发送请求之前做些什么，例如添加token
-    // const token = localStorage.getItem('token')
-    // config.headers.Authorization = `Bearer ${token}`
-    // return config
+    // 在发送请求之前，从localStorage中获取token，并添加到请求头中
+    const token = localStorage.getItem('token')
+    config.headers.Authorization = `Bearer ${token}`
+
     return config
   },
   function (error) {
-    // 对请求错误做些什么
+    // 如果请求出错，返回Promise的reject状态
     return Promise.reject(error)
   }
 )
@@ -22,15 +27,17 @@ instance.interceptors.request.use(
 // 添加响应拦截器
 instance.interceptors.response.use(
   function (response) {
-    // 对响应数据做点什么
-    // const { authorization } = response.headers
-    // authorization && localStorage.setItem('token', authorization)
+    // 如果响应头中包含authorization，将其保存到localStorage中
+    const { authorization } = response.headers
+    authorization && localStorage.setItem('token', authorization)
     return response
   },
   function (error) {
-    // 对响应错误做点什么
+    // 如果响应出错，显示错误消息，并返回Promise的reject状态
     ElMessage.error(error.response.data.msg)
     return Promise.reject(error)
   }
 )
-export default instance;
+
+// 导出axios实例
+export default instance

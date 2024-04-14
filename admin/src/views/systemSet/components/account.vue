@@ -3,6 +3,8 @@ import { onMounted, reactive, ref } from 'vue'
 import type { Ref } from 'vue'
 import Upload from '@/components/upload.vue'
 import { getUserInfoAPI } from '@/apis/userAPI'
+import { useUserStore } from '@/stores/userStore'
+const userStore = useUserStore()
 const userFormRef: Ref<any> = ref(null)
 const dialogVisible = ref(false)
 const userInfo = ref()
@@ -60,7 +62,7 @@ const sexOptions: SexOption[] = [
   { label: '女', value: 0 }
 ]
 const getUserInfo = async () => {
-  const res = await getUserInfoAPI()
+  const res = await getUserInfoAPI({ account: userStore.userInfo.account })
   userInfo.value = res.data
 }
 onMounted(() => getUserInfo())

@@ -13,4 +13,21 @@ const JWT = {
     }
   },
 };
-module.exports = JWT;
+// 定义 tokenVerify 函数
+const tokenVerify = (req, res, next) => {
+  // 获取 token
+  const token = req.headers["Authorization"]?.split(" ")[1];
+  if (!token) {
+    return sendResponse(res, 500, "令牌不存在 请登录");
+  }
+  // 验证 token 是否有效
+  const validity = JWT.verify(token);
+  if (!validity) {
+    return sendResponse(res, 500, "令牌无效 请重新登录");
+  }
+  const { id, account, password } = validity;
+  const newToken = JWT.generate({ id, account, password }, "1d");
+  res.header("Authorization", newToken);
+  next();
+};
+module.exports = { JWT, tokenVerify };

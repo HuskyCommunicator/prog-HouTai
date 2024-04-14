@@ -33,7 +33,6 @@ const validate = (body) => {
     department: Joi.string().max(255),
     name: Joi.string().max(255),
     email: Joi.string().max(255).email(),
-    //   imgUrl: Joi.string().max(255),
     create_time: Joi.string().max(255),
     sex: Joi.string().valid("男", "女"),
     status: Joi.number().integer(),

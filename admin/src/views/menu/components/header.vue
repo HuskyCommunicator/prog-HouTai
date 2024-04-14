@@ -1,12 +1,24 @@
 <script setup lang="ts">
+// 从Vue和用户存储中导入必要的模块
 import { ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
+import { useUserStore } from '@/stores/userStore'
+
+// 初始化用户存储和路由器
+const userStore = useUserStore()
 const router = useRouter()
+
+// 为圆形URL创建响应式状态
 const state = reactive({
   circleUrl: 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png'
 })
+
+// 退出函数，用于清除用户信息并导航至登录页面
 const logout = () => {
+  // 导航至登录页面
   router.push('/login')
+  // 清除用户信息
+  userStore.clearUserInfo()
 }
 </script>
 

@@ -16,7 +16,11 @@ var app = express();
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "jade");
 app.use(cors());
-
+//允许浏览器暴露Authorization头
+app.use(function (req, res, next) {
+  res.header("Access-Control-Expose-Headers", "Authorization");
+  next();
+});
 //extended为false时 值为数组或字符串 true时 值可以为任意类型
 app.use(bodyParser.urlencoded({ extended: false }));
 //处理json
