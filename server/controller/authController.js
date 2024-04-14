@@ -81,7 +81,7 @@ const authController = {
     );
 
     // 将token附带在header中
-    res.header("Authorization", token);
+    res.header("authorization", token);
 
     // 删除user对象中的password字段
     delete user.password;

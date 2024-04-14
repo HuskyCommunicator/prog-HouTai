@@ -14,8 +14,8 @@ const JWT = require("../utils/jwt.js");
 const userController = {
   //获取用户信息
   getUserInfo: async (req, res) => {
-    const { account } = req.body;
-    const user = userService.getUser({ account });
+    const { account } = req.params;
+    const user = await userService.getUser({ account });
     return sendRes(res, 200, "获取成功", user);
   },
   //更新用户信息
@@ -59,3 +59,4 @@ const userController = {
 };
 
 module.exports = userController;
+``;

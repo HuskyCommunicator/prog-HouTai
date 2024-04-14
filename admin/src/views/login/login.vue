@@ -68,8 +68,8 @@ const login = async (): Promise<void> => {
           const res = await loginAPI({ account, password })
           if (res.status === 200) {
             ElMessage.success('登录成功')
-            userStore.userInfo = res.data.data
-            // router.push('/menu')
+            userStore.setUserInfo(res.data.data)
+            router.push('/menu')
           }
         } catch (err: any) {
           // 已在拦截器中处理过错误信息，此处不再重复处理

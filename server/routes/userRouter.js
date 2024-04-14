@@ -16,7 +16,7 @@ const upload = multer({ dest: "public/avatar/" });
 const { tokenVerify } = require("../utils/jwt");
 userRouter.use(tokenVerify);
 //获取用户信息
-userRouter.get("/user/getUserInfo", userController.getUserInfo);
+userRouter.get("/user/getUserInfo/:account", userController.getUserInfo);
 
 //更新用户信息
 userRouter.put(

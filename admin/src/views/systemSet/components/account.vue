@@ -1,13 +1,19 @@
 <script setup lang="ts">
+// 导入必要的组件和Vue函数
 import { onMounted, reactive, ref } from 'vue'
-import type { Ref } from 'vue'
 import Upload from '@/components/upload.vue'
 import { getUserInfoAPI } from '@/apis/userAPI'
 import { useUserStore } from '@/stores/userStore'
+
+// 初始化用户存储
 const userStore = useUserStore()
-const userFormRef: Ref<any> = ref(null)
+
+// 定义响应式引用
+const userFormRef = ref()
 const dialogVisible = ref(false)
 const userInfo = ref()
+
+// 定义用户表单接口
 interface UserForm {
   avatar: string
   account: string
@@ -20,7 +26,9 @@ interface UserForm {
   email: string
   file: File | null
 }
-const userForm: UserForm = reactive<UserForm>({
+
+// 初始化用户表单
+const userForm = reactive<UserForm>({
   avatar: '',
   account: '',
   oldPassword: '',
@@ -32,50 +40,42 @@ const userForm: UserForm = reactive<UserForm>({
   email: '',
   file: null
 })
-interface RuleItem {
-  required?: boolean
-  message: string
-  trigger: string
-  min?: number
-  max?: number
-  type?: string
-}
 
-interface UserFormRules {
-  password: RuleItem[]
-
-  email: RuleItem[]
-}
-
-const userFormRules: UserFormRules = {
-  password: [{ min: 1, max: 20, message: '长度在 6 到 20 个字符', trigger: 'blur' }],
-  email: [{ type: 'email', message: '请输入正确的邮箱格式', trigger: 'blur' }]
-}
-
-interface SexOption {
-  label: string
-  value: number
-}
-
-const sexOptions: SexOption[] = [
+// 初始化性别选项
+const sexOptions = [
   { label: '男', value: 1 },
   { label: '女', value: 0 }
 ]
+
+// 获取用户信息
 const getUserInfo = async () => {
-  const res = await getUserInfoAPI({ account: userStore.userInfo.account })
-  userInfo.value = res.data
+  const { account } = userStore.userInfo
+  const res = await getUserInfoAPI(account)
+  Object.assign(userForm, res.data.data)
 }
+
+// 在组件挂载后获取用户信息
 onMounted(() => getUserInfo())
+
 // 当文件被选择后，更新 userForm 的 avatar 和 file 属性
 const handleChange = (file: File) => {
   userForm.avatar = URL.createObjectURL(file)
   userForm.file = file
+}
+//表单规则
+const userFormRules = {
+  oldPassword: [{ min: 1, max: 20, message: '长度在 1 到 20 个字符', trigger: 'blur' }],
+  newPassword: [{ min: 1, max: 20, message: '长度在 1 到 20 个字符', trigger: 'blur' }],
+  email: [{ type: 'email', message: '请输入正确的邮箱格式', trigger: 'blur' }]
 }
 // 表单提交
 const submitForm = () => {
   console.log(userForm)
   userFormRef.value.validate((valid: boolean) => {
     if (valid) {
+      console.log(userForm)
+
+      // 如果表单验证通过，执行提交操作
     }
   })
 }
