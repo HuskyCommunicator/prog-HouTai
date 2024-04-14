@@ -86,7 +86,7 @@ const submitForm = () => {
 </script>
 
 <template>
-  <div class="wrapper">
+  <div class="tab-wrapper">
     <el-form
       ref="userFormRef"
       :model="userForm"
@@ -161,7 +161,7 @@ const submitForm = () => {
 </template>
 
 <style lang="scss" scoped>
-.wrapper {
+.tab-wrapper {
   margin-left: 40px;
   width: 50%;
 }
