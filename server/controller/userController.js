@@ -15,7 +15,7 @@ const userController = {
   //获取用户信息
   getUserInfo: async (req, res) => {
     const { account } = req.body;
-    const user = userService.findOne({ account });
+    const user = userService.getUser({ account });
     return sendRes(res, 200, "获取成功", user);
   },
   //更新用户信息

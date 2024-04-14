@@ -4,7 +4,7 @@ const userModel = require("../model/userModel.js");
 //登录页-注册
 const userService = {
   //查找用户
-  getUser: async ({ account, id }) => {
+  getUser: async ({ account }) => {
     try {
       return await userModel.findUserByAccount(account);
     } catch (err) {

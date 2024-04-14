@@ -1,5 +1,5 @@
 // 引入用户模型
-const userModel = require("../model/userModel.js");
+const authModel = require("../model/authModel.js");
 
 //登录页-注册
 const authService = {
@@ -12,7 +12,7 @@ const authService = {
     email,
   }) => {
     try {
-      return await userModel.insertUser({
+      return await authModel.insertUser({
         account,
         password,
         identity,
@@ -26,9 +26,9 @@ const authService = {
   },
 
   //查找用户
-  getUser: async ({ account, id }) => {
+  login: async ({ account }) => {
     try {
-      return await userModel.findUserByAccount(account);
+      return await authModel.findPwdByAccount(account);
     } catch (err) {
       console.error("Error in findOne:", err);
     }
@@ -37,7 +37,7 @@ const authService = {
   //更新用户密码
   updatePwd: async ({ account, password }) => {
     try {
-      return await userModel.updateUser({
+      return await authModel.updateUser({
         account,
         password,
       });
@@ -48,7 +48,7 @@ const authService = {
   //更新用户信息
   update: async ({ account, email, password, name, sex, avatar }) => {
     try {
-      return await userModel.updateUserInfo({
+      return await authModel.updateUserInfo({
         account,
         email,
         password,

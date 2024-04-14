@@ -1,6 +1,6 @@
 // 引入 authService，用于处理与用户认证相关的业务逻辑
 var authService = require("../service/authService.js");
-
+var userService = require("../service/userService.js");
 // 引入bcrypt库，用于对用户密码进行加密处理
 const bcrypt = require("bcrypt");
 
@@ -18,7 +18,7 @@ const authController = {
     const { email, account, password } = req.body;
 
     // 查询数据库，检查账号是否已存在
-    const user = await authService.getUser({ account });
+    const user = await authService.login({ account });
     if (user) {
       return sendRes(res, 400, "账号已存在");
     }
@@ -57,18 +57,18 @@ const authController = {
     const { account, password } = req.body;
 
     // 查询数据库，检查账号是否存在
-    const user = await authService.getUser({ account });
+    const result = await authService.login({ account });
 
-    if (!user) {
+    if (!result) {
       return sendRes(res, 400, "账号不存在");
     }
 
     //比较密码
-    const pwd = await bcrypt.compare(password, user.password);
+    const pwd = await bcrypt.compare(password, result.password);
     if (!pwd) {
       return sendRes(res, 400, "账号与密码不匹配");
     }
-
+    const user = await userService.getUser({ account });
     //判定账号是否冻结
     if (user.status === 1) {
       return sendRes(res, 400, "账号已被冻结");

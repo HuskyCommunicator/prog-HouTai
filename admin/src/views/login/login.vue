@@ -69,7 +69,7 @@ const login = async (): Promise<void> => {
           if (res.status === 200) {
             ElMessage.success('登录成功')
             userStore.userInfo = res.data.data
-            router.push('/menu')
+            // router.push('/menu')
           }
         } catch (err: any) {
           // 已在拦截器中处理过错误信息，此处不再重复处理

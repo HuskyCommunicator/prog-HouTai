@@ -1,13 +1,12 @@
 // 引入数据库模块
 const db = require("../db/index.js");
 
-const UserModel = {
-  //获取用户
-  findUserByAccount: (account) => {
+const authModel = {
+  //获取密码
+  findPwdByAccount: (account) => {
     return new Promise((resolve, reject) => {
-      // SQL查询语句，选择除了password以外的所有字段
-      const querySql =
-        "SELECT id, account, identity, department, name, email, create_time, update_time, sex, status, avatar FROM users WHERE account = ?";
+      // SQL查询语句
+      const querySql = "select password from users where account = ?";
       // 执行查询
       db.query(querySql, account, (err, results) => {
         // 如果有错误，拒绝Promise
@@ -25,7 +24,6 @@ const UserModel = {
       // 在这里处理错误，而不是在外部
     });
   },
-
   // 添加用户
   insertUser: (user) => {
     return new Promise((resolve, reject) => {
@@ -46,26 +44,21 @@ const UserModel = {
     });
   },
 
-  //更新信息
-  updateUserInfo: ({ email, password, name, sex, avatar, account }) => {
+  // 更新密码
+  updateUser: ({ account, password }) => {
     return new Promise((resolve, reject) => {
       //sql语句
-      const updateSql =
-        "update users set email = ?, password = ?, name = ?, sex = ?, avatar = ? where account = ?";
+      const updateSql = "update users set password = ? where account = ?";
       // 执行更新
-      db.query(
-        updateSql,
-        [email, password, name, sex, avatar, account],
-        (err, results) => {
-          // 如果有错误，拒绝Promise
-          if (err) {
-            console.error(err);
-            reject(err);
-          }
-          // 否则，解析Promise并返回结果
-          else resolve(results[0]);
+      db.query(updateSql, [password, account], (err, results) => {
+        // 如果有错误，拒绝Promise
+        if (err) {
+          console.error(err);
+          reject(err);
         }
-      );
+        // 否则，解析Promise并返回结果
+        else resolve(results[0]);
+      });
     }).catch((err) => {
       console.error("Error in findUserByAccount:", err);
     });
@@ -73,4 +66,4 @@ const UserModel = {
 };
 
 // 导出UserModel，使其可以在其他文件中被引用
-module.exports = UserModel;
+module.exports = authModel;
