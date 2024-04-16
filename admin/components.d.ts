@@ -8,6 +8,9 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     BreadCrumb: typeof import('./src/components/breadCrumb.vue')['default']
+    copy: typeof import('./src/components/editor copy.vue')['default']
+    Editor: typeof import('./src/components/editor.vue')['default']
+    'Editor copy': typeof import('./src/components/editor copy.vue')['default']
     ElAside: typeof import('element-plus/es')['ElAside']
     ElAvatar: typeof import('element-plus/es')['ElAvatar']
     ElBreadcrumb: typeof import('element-plus/es')['ElBreadcrumb']

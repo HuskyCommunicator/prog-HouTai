@@ -20,7 +20,7 @@ interface UserForm {
   oldPassword: string
   newPassword: string
   name: string
-  sex: number
+  sex: string
   role: string
   department: string
   email: string
@@ -34,7 +34,7 @@ const userForm = reactive<UserForm>({
   oldPassword: '',
   newPassword: '',
   name: '',
-  sex: 1,
+  sex: '1',
   role: '',
   department: '',
   email: '',
@@ -97,7 +97,7 @@ const submitForm = () => {
     >
       <!-- 头像上传 -->
       <el-form-item label="用户头像" prop="avatar">
-        <Upload :avatar="userForm.avatar" @avatarChange="handleChange" />
+        <Upload :avatar="userForm.avatar" @avatarChange="handleChange" v-if="userForm.avatar" />
       </el-form-item>
       <!-- 账号 -->
       <el-form-item label="用户账号" prop="account">

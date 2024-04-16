@@ -23,7 +23,7 @@ const handleChange = (file: UploadFile) => {
 
 // 计算上传的头像 URL，如果 props.avatar 是一个 blob URL，则使用它，否则使用空字符串
 const uploadAvatar = computed(() =>
-  props.avatar?.includes('blob') ? props.avatar : 'http://127.0.0.1:3000' + props.avatar
+  props.avatar!.includes('blob') ? props.avatar : 'http://127.0.0.1:3000' + props.avatar
 )
 </script>
 
