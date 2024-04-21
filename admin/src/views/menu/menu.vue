@@ -36,5 +36,9 @@ import Header from './components/header.vue'
 .el-main {
   padding: 0;
   background-color: rgb(251, 251, 251);
+
+  overflow: auto; /* 允许滚动 */
+  scrollbar-width: none; /* 隐藏滚动条 - Firefox */
+  -ms-overflow-style: none; /* 隐藏滚动条 - Internet Explorer 10+ */
 }
 </style>

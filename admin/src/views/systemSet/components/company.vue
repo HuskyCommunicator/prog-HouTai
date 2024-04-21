@@ -2,10 +2,19 @@
 import { onMounted, reactive, ref } from 'vue'
 import { getCompanyInfoAPI } from '@/apis/companyAPI'
 
-// 创建响应式变量
-const visible = ref(false)
-const editingType = ref('')
-const companyForm = reactive({
+// 定义公司信息的类型
+type CompanyFormType = {
+  content: string
+  name: string
+  introduce: string
+  structure: string
+  strategy: string
+  leader: string
+  [key: string]: string // 允许使用字符串索引访问对象的属性
+}
+
+// 创建响应式变量来存储公司信息
+const companyForm = reactive<CompanyFormType>({
   content: '',
   name: '',
   introduce: '',
@@ -14,20 +23,42 @@ const companyForm = reactive({
   leader: ''
 })
 
-// 获取公司信息
+// 创建响应式变量来控制编辑器的可见性和编辑类型
+const visible = ref(false)
+const editingType = ref('')
+
+// 获取公司信息的函数
 const getCompanyInfo = async () => {
   const res = await getCompanyInfoAPI({ id: 1 })
+  // 在这里处理获取到的公司信息
 }
 
 // 在组件挂载后获取公司信息
 onMounted(() => getCompanyInfo())
 
+// 打开编辑器并设置当前编辑类型和内容
+const openEditor = (type: string) => {
+  editingType.value = type
+  companyForm.content = companyForm[type]
+  visible.value = true
+}
+
+// 提交编辑器内容并更新对应字段
+const submitContent = () => {
+  companyForm[editingType.value] = companyForm.content
+  visible.value = false
+}
+
+// 关闭对话框并重置内容和编辑类型
+const closeDialog = () => {
+  companyForm.content = ''
+  editingType.value = ''
+  visible.value = false
+}
+
 // 表单验证规则
 const companyFormRules = {
-  name: [
-    { required: true, message: '请输入公司名称', trigger: 'blur' },
-    { min: 2, max: 50, message: '长度在 2 到 50 个字符', trigger: 'blur' }
-  ],
+  name: [{ required: true, message: '请输入公司名称', trigger: 'blur' }],
   introduce: [
     { required: true, message: '请输入公司介绍', trigger: 'blur' },
     { min: 2, max: 200, message: '长度在 2 到 200 个字符', trigger: 'blur' }
@@ -46,23 +77,10 @@ const companyFormRules = {
   ]
 }
 
-// 打开编辑器并设置当前编辑类型和内容
-const openEditor = (type: string) => {
-  editingType.value = type
-  companyForm.content = companyForm[type]
-  visible.value = true
-}
-
-// 提交编辑器内容并更新对应字段
-const submitContent = () => {
-  companyForm[editingType.value] = companyForm.content
-}
-
-// 关闭对话框并重置内容和编辑类型
-const closeDialog = () => {
-  companyForm.content = ''
-  editingType.value = ''
-  visible.value = false
+// 提交表单的函数
+const submitForm = () => {
+  // 在这里处理表单提交
+  console.log(companyForm)
 }
 </script>
 
@@ -76,7 +94,7 @@ const closeDialog = () => {
     status-icon
   >
     <el-form-item label="公司名称" prop="name">
-      <el-input v-model="companyForm.leader" />
+      <el-input v-model="companyForm.name" />
     </el-form-item>
     <el-form-item label="公司介绍" prop="introduce">
       <el-button type="primary" round @click="openEditor('introduce')">编辑公司介绍</el-button>
@@ -90,24 +108,26 @@ const closeDialog = () => {
     <el-form-item label="现任高层" prop="leader">
       <el-button type="primary" round @click="openEditor('leader')">编辑现任高层</el-button>
     </el-form-item>
-    <el-dialog v-model="visible" title="Tips" @close="closeDialog">
-      <template #footer>
-        测试
-        <el-form-item label="内容" prop="content">
-          <el-input v-model="companyForm.content" />
-        </el-form-item>
-        <el-button type="primary" @click="submitContent()"> 提交 </el-button>
-      </template>
+    <el-dialog v-model="visible" :title="editingType" @close="closeDialog">
+      <el-input
+        v-model="companyForm.content"
+        :autosize="{ minRows: 4, maxRows: 8 }"
+        type="textarea"
+        placeholder="请输入内容"
+      />
+      <br />
+      <el-button type="primary" @click="submitContent()"> 提交 </el-button>
     </el-dialog>
     <el-form-item>
-      <el-button type="primary" @click="submitForm()">更新新闻</el-button>
+      <el-button type="success" @click="submitForm()">更新公司信息</el-button>
     </el-form-item>
   </el-form>
 </template>
 
 <style lang="scss" scoped>
-// :deep(.el-dialog) {
-//   width: 100%;
-//   height: 850px;
-// }
+:deep(.el-dialog) {
+  .el-button {
+    margin-top: 20px;
+  }
+}
 </style>
