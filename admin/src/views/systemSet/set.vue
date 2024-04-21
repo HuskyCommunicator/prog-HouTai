@@ -6,9 +6,6 @@ import Company from './components/company.vue'
 import Home from './components/home.vue'
 import Other from './components/other.vue'
 
-// 定义响应式引用
-const breadCrumb = ref() // 引用面包屑组件
-const item = ref({ first: '系统设置' }) // 面包屑项目
 const activeName = ref('first') // 当前活动的标签页名称
 </script>
 

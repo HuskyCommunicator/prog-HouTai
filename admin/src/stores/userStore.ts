@@ -27,18 +27,25 @@ export const useUserStore = defineStore({
     })
     // 设置用户信息的方法
     const setUserInfo = (user: User) => {
-      userInfo.value = user
+      console.log(user.avatar)
+
+      if (user.avatar) {
+        userInfo.value = user
+      } else {
+        const { avatar, ...userWithoutAvatar } = user
+        userInfo.value = { ...userInfo.value, ...userWithoutAvatar }
+      }
     }
 
     // 清除用户信息的方法
     const clearUserInfo = () => {
-      userInfo.value = {
-        account: '',
-        name: null,
-        email: '',
-        avatar: null,
-        sex: null
-      } // 清空用户信息
+      // userInfo.value = {
+      //   account: '',
+      //   name: null,
+      //   email: '',
+      //   avatar: null,
+      //   sex: null
+      // } // 清空用户信息
       localStorage.removeItem('user') // 清除本地存储中的用户信息
       localStorage.removeItem('token') // 清除本地存储中的token
     }

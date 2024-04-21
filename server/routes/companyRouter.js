@@ -23,5 +23,10 @@ companyRouter.get(
   upload.single("file"),
   companyController.getInfo
 );
-
+//添加公司信息
+companyRouter.post(
+  "/company/addInfo",
+  upload.single("file"),
+  companyController.addInfo
+);
 module.exports = companyRouter;

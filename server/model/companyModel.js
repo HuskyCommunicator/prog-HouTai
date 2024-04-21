@@ -26,27 +26,22 @@ const companyModel = {
     });
   },
   // 添加公司信息
-  addInfo: (id, introduce, structure, strategy, leader, banner) => {
+  addInfo: (company) => {
     return new Promise((resolve, reject) => {
       // SQL插入语句
-      const insertSql =
-        "INSERT INTO company (id, introduce, structure, strategy, leader, banner) VALUES (?, ?, ?, ?, ?, ?)";
+      const insertSql = "INSERT INTO company set ?";
       // 执行插入
-      db.query(
-        insertSql,
-        [id, introduce, structure, strategy, leader, banner],
-        (err, results) => {
-          // 如果有错误，拒绝Promise
-          if (err) {
-            console.error(err);
-            reject(err);
-          }
-          // 否则，解析Promise并返回结果
-          else {
-            resolve(results);
-          }
+      db.query(insertSql, company, (err, results) => {
+        // 如果有错误，拒绝Promise
+        if (err) {
+          console.error(err);
+          reject(err);
         }
-      );
+        // 否则，解析Promise并返回结果
+        else {
+          resolve(results);
+        }
+      });
     }).catch((err) => {
       console.error("Error in addCompany:", err);
       // 在这里处理错误，而不是在外部

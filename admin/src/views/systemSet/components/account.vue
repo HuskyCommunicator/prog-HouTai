@@ -20,7 +20,7 @@ interface UserForm {
   oldPassword: string
   newPassword: string
   name: string
-  sex: string
+  sex: number
   role: string
   department: string
   email: string
@@ -34,7 +34,7 @@ const userForm = reactive<UserForm>({
   oldPassword: '',
   newPassword: '',
   name: '',
-  sex: '1',
+  sex: 1,
   role: '',
   department: '',
   email: '',
@@ -43,15 +43,16 @@ const userForm = reactive<UserForm>({
 
 // 初始化性别选项
 const sexOptions = [
-  { label: '男', value: '1' },
-  { label: '女', value: '0' }
+  { label: '男', value: 1 },
+  { label: '女', value: 0 }
 ]
 
 // 获取用户信息
 const getUserInfo = async () => {
   const { account } = userStore.userInfo
   const res = await getUserInfoAPI(account)
-  Object.assign(userForm, res.data.data)
+  await Object.assign(userForm, res.data.data)
+  console.log(typeof res.data.data.sex, typeof userForm.sex)
 }
 
 // 在组件挂载后获取用户信息
@@ -77,6 +78,7 @@ const submitForm = () => {
         const res = await updateUserInfoAPI(userForm)
         ElMessage.success(res.data.msg)
         userStore.setUserInfo(res.data.data)
+        console.log(res.data.data)
       } catch (err) {
         return
       }
@@ -113,7 +115,7 @@ const submitForm = () => {
       </el-form-item>
       <!-- 性别 -->
       <el-form-item label="用户性别" prop="sex">
-        <el-select v-model="userForm.sex" class="m-2" placeholder="Select" style="width: 100%">
+        <el-select v-model="userForm.sex" placeholder="Select" style="width: 100%">
           <el-option
             v-for="item in sexOptions"
             :key="item.value"

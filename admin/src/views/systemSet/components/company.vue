@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import Editor from '@/components/editor.vue'
 import { onMounted, reactive, ref } from 'vue'
 import { getCompanyInfoAPI } from '@/apis/companyAPI'
-const companyFormRef = ref()
+
+// 创建响应式变量
 const visible = ref(false)
+const editingType = ref('')
 const companyForm = reactive({
   content: '',
   name: '',
@@ -12,23 +13,16 @@ const companyForm = reactive({
   strategy: '',
   leader: ''
 })
-//editor 内容改变时的回调函数
-const editorChange = (data: string) => {
-  companyForm.content = data // 更新内容
-}
-// 获取公司信息
-const id: number = 1
-// 获取公司信息
 
+// 获取公司信息
 const getCompanyInfo = async () => {
-  const res = await getCompanyInfoAPI({ id })
-  console.log(res.data)
+  const res = await getCompanyInfoAPI({ id: 1 })
 }
+
+// 在组件挂载后获取公司信息
 onMounted(() => getCompanyInfo())
-// 提交表单
-const submitForm = () => {
-  console.log(companyForm)
-}
+
+// 表单验证规则
 const companyFormRules = {
   name: [
     { required: true, message: '请输入公司名称', trigger: 'blur' },
@@ -51,32 +45,27 @@ const companyFormRules = {
     { min: 2, max: 20, message: '长度在 2 到 20 个字符', trigger: 'blur' }
   ]
 }
-//打开编辑器
+
+// 打开编辑器并设置当前编辑类型和内容
 const openEditor = (type: string) => {
-  // 打开编辑器
-  switch (type) {
-    case companyForm.introduce:
-      companyForm.content = companyForm.introduce
-      break
-    case companyForm.structure:
-      companyForm.content = companyForm.structure
-      break
-    case companyForm.strategy:
-      companyForm.content = companyForm.strategy
-      break
-    case companyForm.leader:
-      companyForm.content = companyForm.leader
-      break
-  }
-  console.log(type)
+  editingType.value = type
+  companyForm.content = companyForm[type]
   visible.value = true
 }
-// 提交编辑器内容
+
+// 提交编辑器内容并更新对应字段
 const submitContent = () => {
-  // 提交编辑器内容
-  console.log('submit')
+  companyForm[editingType.value] = companyForm.content
+}
+
+// 关闭对话框并重置内容和编辑类型
+const closeDialog = () => {
+  companyForm.content = ''
+  editingType.value = ''
+  visible.value = false
 }
 </script>
+
 <template>
   <el-form
     ref="companyFormRef"
@@ -86,42 +75,39 @@ const submitContent = () => {
     class="demo-ruleForm"
     status-icon
   >
-    <!-- 名称 -->
     <el-form-item label="公司名称" prop="name">
       <el-input v-model="companyForm.leader" />
     </el-form-item>
-    <!-- 公司介绍 -->
     <el-form-item label="公司介绍" prop="introduce">
       <el-button type="primary" round @click="openEditor('introduce')">编辑公司介绍</el-button>
     </el-form-item>
-    <!-- 公司架构 -->
-    <el-form-item label="公司架构" prop="introduce">
+    <el-form-item label="公司架构" prop="structure">
       <el-button type="primary" round @click="openEditor('structure')">编辑公司架构</el-button>
     </el-form-item>
-    <!-- 公司战略 -->
     <el-form-item label="公司战略" prop="strategy">
       <el-button type="primary" round @click="openEditor('strategy')">编辑公司战略</el-button>
     </el-form-item>
-    <!-- 现任高层 -->
     <el-form-item label="现任高层" prop="leader">
       <el-button type="primary" round @click="openEditor('leader')">编辑现任高层</el-button>
     </el-form-item>
-
-    <!-- 内容编辑器 -->
-    <el-dialog v-model="visible" title="Tips" width="800px">
+    <el-dialog v-model="visible" title="Tips" @close="closeDialog">
       <template #footer>
-        <div class="dialog-footer">
-          <Editor :content="companyForm.content" @event="editorChange" />
-          <el-button type="primary" @click="submitContent()"> 提交 </el-button>
-        </div>
+        测试
+        <el-form-item label="内容" prop="content">
+          <el-input v-model="companyForm.content" />
+        </el-form-item>
+        <el-button type="primary" @click="submitContent()"> 提交 </el-button>
       </template>
     </el-dialog>
-    <!-- <Editor @event="editorChange" :content="newsForm.content" v-if="newsForm.content" /> -->
-
-    <!-- 提交按钮 -->
     <el-form-item>
       <el-button type="primary" @click="submitForm()">更新新闻</el-button>
     </el-form-item>
   </el-form>
 </template>
-<style lang="scss" scoped></style>
+
+<style lang="scss" scoped>
+// :deep(.el-dialog) {
+//   width: 100%;
+//   height: 850px;
+// }
+</style>

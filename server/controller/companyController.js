@@ -15,7 +15,20 @@ const companyController = {
     const result = await companyService.getInfo(id);
     return sendRes(res, 200, "获取公司信息成功", result);
   },
+  //添加公司信息
+  addInfo: async (req, res) => {
+    const { id, introduce, structure, strategy, leader, banner } = req.body;
+    const result = { id, introduce, structure, strategy, leader, banner };
+    await companyService.addInfo({
+      id,
+      introduce,
+      structure,
+      strategy,
+      leader,
+      banner,
+    });
+    return sendRes(res, 200, "添加公司信息成功", result);
+  },
 };
 
 module.exports = companyController;
-``;
