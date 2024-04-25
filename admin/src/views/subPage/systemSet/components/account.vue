@@ -52,7 +52,6 @@ const getUserInfo = async () => {
   const { account } = userStore.userInfo
   const res = await getUserInfoAPI(account)
   await Object.assign(userForm, res.data.data)
-  console.log(typeof res.data.data.sex, typeof userForm.sex)
 }
 
 // 在组件挂载后获取用户信息
@@ -76,9 +75,10 @@ const submitForm = () => {
     if (valid) {
       try {
         const res = await updateUserInfoAPI(userForm)
-        ElMessage.success(res.data.msg)
-        userStore.setUserInfo(res.data.data)
-        console.log(res.data.data)
+        if (res.status === 200) {
+          ElMessage.success(res.data.msg)
+          userStore.setUserInfo(res.data.data)
+        }
       } catch (err) {
         return
       }

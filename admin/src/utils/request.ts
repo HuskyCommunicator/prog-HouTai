@@ -2,7 +2,7 @@
 import axios from 'axios'
 
 import { ElMessage } from 'element-plus'
-
+import { useRouter } from 'vue-router'
 // 创建axios实例，并设置基础URL和超时时间
 const instance = axios.create({
   baseURL: 'http://localhost:3000',
@@ -13,6 +13,8 @@ const instance = axios.create({
 instance.interceptors.request.use(
   function (config) {
     // 在发送请求之前，从localStorage中获取token，并添加到请求头中
+    if (!localStorage.getItem('token')) {
+    }
     const token = localStorage.getItem('token')
     config.headers.Authorization = `Bearer ${token}`
 

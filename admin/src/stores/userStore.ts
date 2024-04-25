@@ -25,36 +25,34 @@ export const useUserStore = defineStore({
       avatar: null,
       sex: null
     })
+    const isRouterConfig = ref(false)
+    const changeRouterConfig = (value: boolean) => {
+      isRouterConfig.value = value
+    }
     // 设置用户信息的方法
     const setUserInfo = (user: User) => {
-      console.log(user.avatar)
-
       if (user.avatar) {
         userInfo.value = user
       } else {
         const { avatar, ...userWithoutAvatar } = user
         userInfo.value = { ...userInfo.value, ...userWithoutAvatar }
       }
+      localStorage.setItem('userInfo', JSON.stringify(userInfo.value))
     }
 
     // 清除用户信息的方法
     const clearUserInfo = () => {
-      // userInfo.value = {
-      //   account: '',
-      //   name: null,
-      //   email: '',
-      //   avatar: null,
-      //   sex: null
-      // } // 清空用户信息
-      localStorage.removeItem('user') // 清除本地存储中的用户信息
+      localStorage.removeItem('userInfo') // 清除本地存储中的用户信息
+
       localStorage.removeItem('token') // 清除本地存储中的token
+      changeRouterConfig(false)
     }
 
     // 返回状态和方法
-    return { userInfo, setUserInfo, clearUserInfo }
-  },
-  // 持久化用户信息
-  persist: {
-    paths: ['userInfo']
+    return { userInfo, setUserInfo, clearUserInfo, isRouterConfig, changeRouterConfig }
   }
+  // 持久化用户信息
+  // persist: {
+  //       paths: ['userInfo']
+  // }
 })
