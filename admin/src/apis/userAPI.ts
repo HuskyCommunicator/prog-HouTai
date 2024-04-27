@@ -6,7 +6,8 @@ export const getUserInfoAPI = (account: any) => {
     url: `/user/getUserInfo/${account}`,
     method: 'get'
   }).catch((error) => {
-    return Promise.reject(error)
+    //  return Promise.reject(error)
+    console.log('gg')
   })
 }
 //更新用户信息接口

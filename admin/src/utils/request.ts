@@ -1,8 +1,8 @@
 // 导入axios和element-plus的消息组件
 import axios from 'axios'
-
 import { ElMessage } from 'element-plus'
-import { useRouter } from 'vue-router'
+import { useUserStore } from '@/stores/userStore'
+
 // 创建axios实例，并设置基础URL和超时时间
 const instance = axios.create({
   baseURL: 'http://localhost:3000',
@@ -36,7 +36,15 @@ instance.interceptors.response.use(
   },
   function (error) {
     // 如果响应出错，显示错误消息，并返回Promise的reject状态
+    if (error.response) {
+      const userStore = useUserStore()
+      if (error.response.status === 401) {
+        window.location.href = '/login'
+        userStore.clearUserInfo()
+      }
+    }
     ElMessage.error(error.response.data.msg)
+
     return Promise.reject(error)
   }
 )

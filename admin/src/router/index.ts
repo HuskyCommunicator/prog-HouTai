@@ -68,7 +68,7 @@ router.beforeEach((to, from, next) => {
 //权限判断
 const checkPermission = (item: any) => {
   const userStore = useUserStore()
-  const identity = cs.decodedToken!.identity
+  const identity = userStore.userInfo.identity
   return identity === 1 || !item.requireAdmin
 }
 export default router

@@ -10,6 +10,7 @@ interface User {
   email: string
   avatar: string | null
   sex: string | null
+  identity: number | null
 }
 // 定义用户存储
 export const useUserStore = defineStore({
@@ -23,7 +24,8 @@ export const useUserStore = defineStore({
       name: null,
       email: '',
       avatar: null,
-      sex: null
+      sex: null,
+      identity: null
     })
     const isRouterConfig = ref(false)
     const changeRouterConfig = (value: boolean) => {
@@ -41,7 +43,14 @@ export const useUserStore = defineStore({
 
     // 清除用户信息的方法
     const clearUserInfo = () => {
-      userInfo.value = { account: '', name: null, email: '', avatar: null, sex: null }
+      userInfo.value = {
+        account: '',
+        name: null,
+        email: '',
+        avatar: null,
+        sex: null,
+        identity: null
+      }
       localStorage.removeItem('token') // 清除本地存储中的token
       changeRouterConfig(false)
     }

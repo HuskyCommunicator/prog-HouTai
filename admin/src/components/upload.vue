@@ -6,12 +6,12 @@ const props = defineProps({
 })
 const emit = defineEmits(['avatarChange'])
 // 当文件被选择后，更新 userForm 的 avatar 和 file 属性
-const handleChange = (file) => {
+const handleChange = (file: any) => {
   emit('avatarChange', file.raw)
 }
 // 计算上传的头像URL
 const uploadAvatar = computed(() =>
-  props.avatar.includes('blob') ? props.avatar : 'http://127.0.0.1:3000' + props.avatar
+  props.avatar!.includes('blob') ? props.avatar : 'http://127.0.0.1:3000' + props.avatar
 )
 </script>
 <template>

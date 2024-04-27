@@ -1,5 +1,7 @@
 // 定义 JWT 对象
 const jsonwebtoken = require("jsonwebtoken");
+// 引入sendRes模块，用于发送HTTP响应
+const sendRes = require("../utils/sendRes.js");
 const secret = "erha";
 const JWT = {
   generate(value, expired) {
@@ -18,12 +20,12 @@ const tokenVerify = (req, res, next) => {
   // 获取 token
   const token = req.headers["authorization"]?.split(" ")[1];
   if (!token) {
-    return sendResponse(res, 500, "令牌不存在 请登录");
+    return sendRes(res, 401, "令牌不存在 请登录");
   }
   // 验证 token 是否有效
   const validity = JWT.verify(token);
   if (!validity) {
-    return sendResponse(res, 500, "令牌无效 请重新登录");
+    return sendRes(res, 401, "令牌无效 请重新登录");
   }
   const { id, account, identity } = validity;
   const newToken = JWT.generate({ identity, id, account }, "1d");

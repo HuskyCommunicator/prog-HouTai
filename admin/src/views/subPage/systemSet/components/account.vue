@@ -1,7 +1,5 @@
 <script setup lang="ts">
-// 导入必要的组件和Vue函数
-import { onBeforeMount, onMounted, reactive, ref } from 'vue'
-import Upload from '@/components/upload.vue'
+import { computed, onMounted, reactive, ref } from 'vue'
 import { getUserInfoAPI, updateUserInfoAPI } from '@/apis/userAPI'
 import { useUserStore } from '@/stores/userStore'
 import { ElMessage } from 'element-plus'
@@ -34,7 +32,7 @@ const userForm = reactive<UserForm>({
   oldPassword: '',
   newPassword: '',
   name: '',
-  sex: 1,
+  sex: 0,
   role: '',
   department: '',
   email: '',
@@ -51,7 +49,28 @@ const sexOptions = [
 const getUserInfo = async () => {
   const { account } = userStore.userInfo
   const res = await getUserInfoAPI(account)
-  await Object.assign(userForm, res.data.data)
+  Object.assign(userForm, res!.data.data)
+  fixUserInfo()
+}
+
+// 调整获取到的信息
+const fixUserInfo = () => {
+  if (!userForm.sex) {
+    userForm.sex = 1
+  }
+  switch (userStore.userInfo.identity) {
+    case 1:
+      userForm.role = '超级管理员'
+      break
+    case 2:
+      userForm.role = '中级管理员'
+      break
+    case 3:
+      userForm.role = '初级管理员'
+      break
+    default:
+      userForm.role = '未知角色'
+  }
 }
 
 // 在组件挂载后获取用户信息
@@ -62,7 +81,8 @@ const handleChange = (file: File) => {
   userForm.avatar = URL.createObjectURL(file)
   userForm.file = file
 }
-//表单规则
+
+// 表单规则
 const userFormRules = {
   oldPassword: [{ min: 1, max: 5, message: '长度在 1 到 5 个字符', trigger: 'blur' }],
   newPassword: [{ min: 1, max: 5, message: '长度在 1 到 5 个字符', trigger: 'blur' }],
@@ -79,7 +99,9 @@ const submitForm = () => {
           ElMessage.success(res.data.msg)
           userStore.setUserInfo(res.data.data)
         }
-      } catch (err) {}
+      } catch (err) {
+        // 处理错误
+      }
     }
   })
 }

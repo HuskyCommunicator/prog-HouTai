@@ -21,9 +21,7 @@ const logout = () => {
   router.push('/login')
 }
 import cs from '@/utils/tokenAna'
-const changeAvatar = () => {
-  console.log(cs.decodedToken.identity)
-}
+const changeAvatar = () => {}
 </script>
 
 <template>

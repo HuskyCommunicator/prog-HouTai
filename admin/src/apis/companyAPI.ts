@@ -6,6 +6,6 @@ export const getCompanyInfoAPI = ({ id }: { id: number }) => {
     url: `/company/getInfo/${id}`,
     method: 'get'
   }).catch((error) => {
-    return Promise.reject(error)
+    // return Promise.reject(error)
   })
 }

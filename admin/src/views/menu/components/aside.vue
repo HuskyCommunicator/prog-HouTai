@@ -11,7 +11,7 @@ import { ref } from 'vue'
       <el-icon><House /></el-icon>
       <span>首页</span>
     </el-menu-item>
-    <el-menu-item index="/home">
+    <el-menu-item index="/info">
       <el-icon><Document /></el-icon>
       <span>系统概览</span>
     </el-menu-item>
@@ -90,10 +90,9 @@ import { ref } from 'vue'
   color: aliceblue;
   line-height: 56px;
 }
-.el-menu-item:hover,
-.el-menu-item-group:hover,
+:deep(.el-menu-item:hover),
 :deep(.el-sub-menu__title:hover) {
-  background-color: #3a5c9d;
+  background-color: rgb(119, 131, 227);
 }
 :deep(.el-menu-item-group__title) {
   text-align: left;

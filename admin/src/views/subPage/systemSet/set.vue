@@ -10,10 +10,8 @@ const activeName = ref('first') // 当前活动的标签页名称
 </script>
 
 <template>
+  <el-page-header icon="" title="系统设置" content="" />
   <div class="wrapper">
-    <!-- 面包屑组件-->
-    <el-page-header icon="" title="系统设置" content="" />
-
     <!-- tab -->
     <el-tabs v-model="activeName" class="demo-tabs">
       <el-tab-pane label="账号详情" name="first"><Account /></el-tab-pane>
@@ -34,4 +32,8 @@ const activeName = ref('first') // 当前活动的标签页名称
   padding: 32px;
   font-size: 32px;
 }
+// :deep(.el-page-header__title) {
+//   font-size: 22px;
+//   margin: auto;
+// }
 </style>
