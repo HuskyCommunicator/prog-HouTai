@@ -11,8 +11,7 @@ const JWT = require("../utils/jwt.js");
 const companyController = {
   //获取公司信息
   getInfo: async (req, res) => {
-    const id = req.params.id;
-    const result = await companyService.getInfo(id);
+    const result = await companyService.getInfo();
     return sendRes(res, 200, "获取公司信息成功", result);
   },
   //添加公司信息
@@ -28,6 +27,19 @@ const companyController = {
       banner,
     });
     return sendRes(res, 200, "添加公司信息成功", result);
+  },
+  //更新公司信息
+  updateInfo: async (req, res) => {
+    const { name, introduce, structure, strategy, leader, banner } = req.body;
+    await companyService.updateInfo({
+      name,
+      introduce,
+      structure,
+      strategy,
+      leader,
+      banner,
+    });
+    return sendRes(res, 200, "更新公司信息成功");
   },
 };
 

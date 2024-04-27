@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onMounted, reactive, ref } from 'vue'
-import { getCompanyInfoAPI } from '@/apis/companyAPI'
+import { getCompanyInfoAPI, updateCompanyInfoAPI } from '@/apis/companyAPI'
+import { ElMessage } from 'element-plus'
 
 // 定义公司信息的类型
 type CompanyFormType = {
@@ -29,7 +30,8 @@ const editingType = ref('')
 
 // 获取公司信息的函数
 const getCompanyInfo = async () => {
-  const res = await getCompanyInfoAPI({ id: 1 })
+  const res = await getCompanyInfoAPI()
+  Object.assign(companyForm, res!.data.data)
   // 在这里处理获取到的公司信息
 }
 
@@ -78,9 +80,12 @@ const companyFormRules = {
 }
 
 // 提交表单的函数
-const submitForm = () => {
+const submitForm = async () => {
   // 在这里处理表单提交
-  console.log(companyForm)
+  const res = await updateCompanyInfoAPI(companyForm)
+
+  getCompanyInfo()
+  ElMessage.success(res!.data.msg)
 }
 </script>
 
@@ -94,7 +99,7 @@ const submitForm = () => {
     status-icon
   >
     <el-form-item label="公司名称" prop="name">
-      <el-input v-model="companyForm.name" />
+      <el-input v-model="companyForm.name" class="name-input" />
     </el-form-item>
     <el-form-item label="公司介绍" prop="introduce">
       <el-button type="primary" round @click="openEditor('introduce')">编辑公司介绍</el-button>
@@ -129,5 +134,11 @@ const submitForm = () => {
   .el-button {
     margin-top: 20px;
   }
+}
+.name-input {
+  width: 200px;
+}
+:deep(.el-textarea__inner) {
+  height: 500px;
 }
 </style>

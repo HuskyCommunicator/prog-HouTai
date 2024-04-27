@@ -12,13 +12,9 @@ const valid = require("../middleware/validate");
 //文件上传
 const multer = require("multer");
 const upload = multer({ dest: "public/avatar/" });
-// //token验证
-// const { tokenVerify } = require("../utils/jwt");
-// userRouter.use(tokenVerify);
-
 //获取公司信息
 companyRouter.get(
-  "/company/getInfo/:id",
+  "/company/getInfo",
   // valid,
   upload.single("file"),
   companyController.getInfo
@@ -28,5 +24,11 @@ companyRouter.post(
   "/company/addInfo",
   upload.single("file"),
   companyController.addInfo
+);
+//更新公司信息
+companyRouter.put(
+  "/company/updateInfo",
+  upload.single("file"),
+  companyController.updateInfo
 );
 module.exports = companyRouter;
