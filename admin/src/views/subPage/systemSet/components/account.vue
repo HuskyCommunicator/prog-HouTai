@@ -1,6 +1,6 @@
 <script setup lang="ts">
 // 导入必要的组件和Vue函数
-import { onMounted, reactive, ref } from 'vue'
+import { onBeforeMount, onMounted, reactive, ref } from 'vue'
 import Upload from '@/components/upload.vue'
 import { getUserInfoAPI, updateUserInfoAPI } from '@/apis/userAPI'
 import { useUserStore } from '@/stores/userStore'
@@ -79,9 +79,7 @@ const submitForm = () => {
           ElMessage.success(res.data.msg)
           userStore.setUserInfo(res.data.data)
         }
-      } catch (err) {
-        return
-      }
+      } catch (err) {}
     }
   })
 }
@@ -99,7 +97,7 @@ const submitForm = () => {
     >
       <!-- 头像上传 -->
       <el-form-item label="用户头像" prop="avatar">
-        <Upload :avatar="userForm.avatar" @avatarChange="handleChange" v-if="userForm.avatar" />
+        <Upload :avatar="userForm.avatar" @avatarChange="handleChange" />
       </el-form-item>
       <!-- 账号 -->
       <el-form-item label="用户账号" prop="account">

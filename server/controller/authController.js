@@ -27,7 +27,7 @@ const authController = {
     const encryptedPassword = bcrypt.hashSync(password, 10);
 
     // 补充其他属性
-    const identity = "用户";
+    const identity = 1;
     const create_time = new Date();
     const status = 0;
 
@@ -73,10 +73,9 @@ const authController = {
     if (user.status === 1) {
       return sendRes(res, 400, "账号已被冻结");
     }
-
     //生成token
     const token = JWT.generate(
-      { id: user.id, account: user.account, password: user.password },
+      { identity: user.identity, id: user.id, account: user.account },
       "1d"
     );
 

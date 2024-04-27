@@ -3,6 +3,7 @@ import routeConfig from './config'
 import { useUserStore } from '@/stores/userStore'
 import { ElMessage } from 'element-plus'
 import menu from '@/views/menu/menu.vue'
+import cs from '@/utils/tokenAna'
 const router = createRouter({
   history: createWebHashHistory(import.meta.env.BASE_URL),
   routes: [
@@ -67,6 +68,7 @@ router.beforeEach((to, from, next) => {
 //权限判断
 const checkPermission = (item: any) => {
   const userStore = useUserStore()
-  return 1
+  const identity = cs.decodedToken!.identity
+  return identity === 1 || !item.requireAdmin
 }
 export default router

@@ -15,10 +15,14 @@ const avatar = computed(() =>
 )
 // 退出函数，用于清除用户信息并导航至登录页面
 const logout = () => {
-  // 导航至登录页面
-  router.push('/login')
   // 清除用户信息
   userStore.clearUserInfo()
+  // 导航至登录页面
+  router.push('/login')
+}
+import cs from '@/utils/tokenAna'
+const changeAvatar = () => {
+  console.log(cs.decodedToken.identity)
 }
 </script>
 
@@ -36,7 +40,7 @@ const logout = () => {
         <template #dropdown>
           <el-dropdown-menu>
             <el-dropdown-item @click="router.push('/set')">设置账号</el-dropdown-item>
-            <el-dropdown-item>更改头像</el-dropdown-item>
+            <el-dropdown-item @click="changeAvatar">更改头像</el-dropdown-item>
             <el-dropdown-item @click="logout">退出登陆</el-dropdown-item>
           </el-dropdown-menu>
         </template>

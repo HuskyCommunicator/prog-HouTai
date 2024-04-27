@@ -1,7 +1,24 @@
-import jwt from 'jsonwebtoken'
+import { jwtDecode } from 'jwt-decode'
+const token = localStorage.getItem('token')
+interface DecodedToken {
+  identity: number
+  account: string
+  iat: number
+  exp: number
+}
 
-let token = '你的 JWT Token'
+let decodedToken: DecodedToken | null = null
+if (token) {
+  try {
+    decodedToken = jwtDecode(token)
+  } catch (error) {
+    console.error('Failed to decode token', error)
+  }
+}
 
-let decodedToken = jwt.decode(token)
+const cs = {
+  token,
+  decodedToken
+}
 
-console.log(decodedToken)
+export default cs

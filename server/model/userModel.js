@@ -7,7 +7,7 @@ const UserModel = {
     return new Promise((resolve, reject) => {
       // SQL查询语句，选择除了password以外的所有字段
       const querySql =
-        "SELECT account, name, email, sex, avatar FROM users WHERE account = ?";
+        "SELECT account, name, email, sex, avatar, identity FROM users WHERE account = ?";
       // 执行查询
       db.query(querySql, account, (err, results) => {
         // 如果有错误，拒绝Promise

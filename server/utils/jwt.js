@@ -25,8 +25,9 @@ const tokenVerify = (req, res, next) => {
   if (!validity) {
     return sendResponse(res, 500, "令牌无效 请重新登录");
   }
-  const { id, account, password } = validity;
-  const newToken = JWT.generate({ id, account, password }, "1d");
+  const { id, account, identity } = validity;
+  const newToken = JWT.generate({ identity, id, account }, "1d");
+
   res.header("authorization", newToken);
   next();
 };

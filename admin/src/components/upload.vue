@@ -1,46 +1,55 @@
 <script setup lang="ts">
-// 导入 Vue 的响应式函数和 Element Plus 的图标组件
-import { computed, ref } from 'vue'
+import { computed } from 'vue'
 import { Plus } from '@element-plus/icons-vue'
-
-// 定义组件的 props
 const props = defineProps({
-  avatar: String // 用户的头像 URL
+  avatar: String
 })
-
-// 定义组件的自定义事件
-const emit = defineEmits(['avatarChange']) // 当用户选择新的头像文件时触发
-
-// 定义上传文件的接口
-interface UploadFile {
-  raw: File // 上传的文件对象
-}
-
-// 当用户选择新的头像文件时，触发 avatarChange 事件
-const handleChange = (file: UploadFile) => {
+const emit = defineEmits(['avatarChange'])
+// 当文件被选择后，更新 userForm 的 avatar 和 file 属性
+const handleChange = (file) => {
   emit('avatarChange', file.raw)
 }
-
-// 计算上传的头像 URL，如果 props.avatar 是一个 blob URL，则使用它，否则使用空字符串
+// 计算上传的头像URL
 const uploadAvatar = computed(() =>
-  props.avatar!.includes('blob') ? props.avatar : 'http://127.0.0.1:3000' + props.avatar
+  props.avatar.includes('blob') ? props.avatar : 'http://127.0.0.1:3000' + props.avatar
 )
 </script>
-
 <template>
-  <!-- 头像上传组件 -->
   <el-upload
     class="avatar-uploader"
-    action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"
+    action=""
     :show-file-list="false"
-    accept="image/png,image/jpeg"
     :auto-upload="false"
     :on-change="handleChange"
+    accept="image/png,image/jpeg"
   >
-    <!-- 如果有上传的头像 URL，则显示头像图片，否则显示上传图标 -->
-    <img v-if="uploadAvatar" :src="uploadAvatar" class="avatar" />
+    <img v-if="props.avatar" :src="uploadAvatar" class="avatar" />
     <el-icon v-else class="avatar-uploader-icon"><Plus /></el-icon>
   </el-upload>
 </template>
+<style lang="scss" scoped>
+.avatar-uploader .el-upload {
+  border: 1px dashed var(--el-border-color);
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: var(--el-transition-duration-fast);
+}
 
-<style lang="scss"></style>
+.avatar-uploader .el-upload:hover {
+  border-color: var(--el-color-primary);
+}
+
+.el-icon.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 178px;
+  height: 178px;
+  text-align: center;
+}
+.avatar {
+  width: 178px;
+  height: 178px;
+}
+</style>

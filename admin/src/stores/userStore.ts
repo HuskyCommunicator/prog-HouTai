@@ -37,22 +37,20 @@ export const useUserStore = defineStore({
         const { avatar, ...userWithoutAvatar } = user
         userInfo.value = { ...userInfo.value, ...userWithoutAvatar }
       }
-      localStorage.setItem('userInfo', JSON.stringify(userInfo.value))
     }
 
     // 清除用户信息的方法
     const clearUserInfo = () => {
-      localStorage.removeItem('userInfo') // 清除本地存储中的用户信息
-
+      userInfo.value = { account: '', name: null, email: '', avatar: null, sex: null }
       localStorage.removeItem('token') // 清除本地存储中的token
       changeRouterConfig(false)
     }
 
     // 返回状态和方法
     return { userInfo, setUserInfo, clearUserInfo, isRouterConfig, changeRouterConfig }
-  }
+  },
   // 持久化用户信息
-  // persist: {
-  //       paths: ['userInfo']
-  // }
+  persist: {
+    paths: ['userInfo']
+  }
 })
